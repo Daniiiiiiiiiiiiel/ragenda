@@ -1,0 +1,104 @@
+{
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "book": "Book Now",
+    "login": "Sign In",
+    "register": "Get Started",
+    "portal": "My Appointments",
+    "logout": "Sign Out"
+  },
+  "hero": {
+    "badge": "Smart Scheduling",
+    "title": "Book your appointment",
+    "titleAccent": "in seconds",
+    "subtitle": "Simple, fast, and reliable scheduling. Choose your service, pick a time, and we'll handle the rest.",
+    "cta": "Book an Appointment",
+    "ctaSecondary": "View Services"
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "Choose the service that fits your needs",
+    "duration": "{{min}} min",
+    "from": "From ${{price}}",
+    "book": "Book Now"
+  },
+  "howItWorks": {
+    "title": "How it works",
+    "subtitle": "Three simple steps to your appointment",
+    "step1": { "title": "Choose a service", "desc": "Browse our services and find the one that fits your needs." },
+    "step2": { "title": "Pick a date & time", "desc": "Select from available slots on our interactive calendar." },
+    "step3": { "title": "Confirm & relax", "desc": "You'll receive a confirmation as soon as we review your request." }
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Create Account",
+    "email": "Email address",
+    "password": "Password",
+    "name": "Full name",
+    "phone": "Phone number (optional)",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "loggingIn": "Signing in...",
+    "registering": "Creating account...",
+    "passwordHint": "Min. 8 chars, one uppercase, one number"
+  },
+  "portal": {
+    "title": "My Appointments",
+    "empty": "No appointments yet",
+    "emptyDesc": "Book your first appointment to get started.",
+    "bookNow": "Book Now",
+    "cancel": "Cancel",
+    "cancelling": "Cancelling...",
+    "confirmCancel": "Cancel this appointment?",
+    "confirmCancelDesc": "This action cannot be undone.",
+    "confirm": "Yes, cancel",
+    "keepIt": "Keep it",
+    "date": "Date",
+    "time": "Time",
+    "service": "Service",
+    "status": "Status",
+    "notes": "Your notes"
+  },
+  "booking": {
+    "title": "Book an Appointment",
+    "selectService": "Select a Service",
+    "selectDate": "Choose a Date",
+    "selectTime": "Choose a Time",
+    "summary": "Appointment Summary",
+    "notes": "Additional notes (optional)",
+    "notesPlaceholder": "Tell us anything we should know...",
+    "confirm": "Confirm Appointment",
+    "confirming": "Confirming...",
+    "success": "Appointment Requested!",
+    "successDesc": "We'll review your request and confirm shortly.",
+    "goToPortal": "View My Appointments",
+    "noSlots": "No available times for this date.",
+    "duration": "{{min}} min",
+    "price": "${{price}}"
+  },
+  "status": {
+    "PENDING": "Pending",
+    "ACCEPTED": "Confirmed",
+    "REJECTED": "Rejected",
+    "CANCELLED": "Cancelled"
+  },
+  "footer": {
+    "tagline": "Smart appointment scheduling for modern businesses.",
+    "rights": "All rights reserved."
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Network error. Check your connection.",
+    "unauthorized": "Please sign in to continue."
+  },
+  "verify": {
+    "title": "Verifying your email...",
+    "success": "Email verified!",
+    "successDesc": "Your account is now active. You can sign in.",
+    "error": "Verification failed",
+    "errorDesc": "The link may be expired or invalid.",
+    "goLogin": "Go to Sign In"
+  }
+}

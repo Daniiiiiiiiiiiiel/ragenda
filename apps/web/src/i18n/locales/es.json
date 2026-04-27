@@ -1,0 +1,104 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "services": "Servicios",
+    "book": "Agendar",
+    "login": "Iniciar sesión",
+    "register": "Comenzar",
+    "portal": "Mis citas",
+    "logout": "Cerrar sesión"
+  },
+  "hero": {
+    "badge": "Agendamiento inteligente",
+    "title": "Agenda tu cita",
+    "titleAccent": "en segundos",
+    "subtitle": "Simple, rápido y confiable. Elige tu servicio, selecciona un horario y nosotros hacemos el resto.",
+    "cta": "Agendar una cita",
+    "ctaSecondary": "Ver servicios"
+  },
+  "services": {
+    "title": "Nuestros Servicios",
+    "subtitle": "Elige el servicio que necesitas",
+    "duration": "{{min}} min",
+    "from": "Desde ${{price}}",
+    "book": "Agendar"
+  },
+  "howItWorks": {
+    "title": "¿Cómo funciona?",
+    "subtitle": "Tres pasos simples para tu cita",
+    "step1": { "title": "Elige un servicio", "desc": "Explora nuestros servicios y encuentra el que necesitas." },
+    "step2": { "title": "Elige fecha y hora", "desc": "Selecciona un horario disponible en nuestro calendario." },
+    "step3": { "title": "Confirma y relájate", "desc": "Recibirás una confirmación en cuanto revisemos tu solicitud." }
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "register": "Crear cuenta",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "name": "Nombre completo",
+    "phone": "Teléfono (opcional)",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "loggingIn": "Iniciando sesión...",
+    "registering": "Creando cuenta...",
+    "passwordHint": "Mín. 8 caracteres, una mayúscula, un número"
+  },
+  "portal": {
+    "title": "Mis Citas",
+    "empty": "Sin citas aún",
+    "emptyDesc": "Agenda tu primera cita para comenzar.",
+    "bookNow": "Agendar",
+    "cancel": "Cancelar",
+    "cancelling": "Cancelando...",
+    "confirmCancel": "¿Cancelar esta cita?",
+    "confirmCancelDesc": "Esta acción no se puede deshacer.",
+    "confirm": "Sí, cancelar",
+    "keepIt": "Mantener",
+    "date": "Fecha",
+    "time": "Hora",
+    "service": "Servicio",
+    "status": "Estado",
+    "notes": "Tus notas"
+  },
+  "booking": {
+    "title": "Agendar Cita",
+    "selectService": "Selecciona un Servicio",
+    "selectDate": "Elige una Fecha",
+    "selectTime": "Elige un Horario",
+    "summary": "Resumen de la Cita",
+    "notes": "Notas adicionales (opcional)",
+    "notesPlaceholder": "Cuéntanos lo que necesitamos saber...",
+    "confirm": "Confirmar Cita",
+    "confirming": "Confirmando...",
+    "success": "¡Cita solicitada!",
+    "successDesc": "Revisaremos tu solicitud y confirmaremos pronto.",
+    "goToPortal": "Ver mis citas",
+    "noSlots": "No hay horarios disponibles para este día.",
+    "duration": "{{min}} min",
+    "price": "${{price}}"
+  },
+  "status": {
+    "PENDING": "Pendiente",
+    "ACCEPTED": "Confirmada",
+    "REJECTED": "Rechazada",
+    "CANCELLED": "Cancelada"
+  },
+  "footer": {
+    "tagline": "Agendamiento inteligente para negocios modernos.",
+    "rights": "Todos los derechos reservados."
+  },
+  "errors": {
+    "generic": "Algo salió mal. Por favor intenta de nuevo.",
+    "network": "Error de red. Verifica tu conexión.",
+    "unauthorized": "Por favor inicia sesión para continuar."
+  },
+  "verify": {
+    "title": "Verificando tu correo...",
+    "success": "¡Correo verificado!",
+    "successDesc": "Tu cuenta ya está activa. Puedes iniciar sesión.",
+    "error": "Verificación fallida",
+    "errorDesc": "El enlace puede estar vencido o ser inválido.",
+    "goLogin": "Ir a iniciar sesión"
+  }
+}
