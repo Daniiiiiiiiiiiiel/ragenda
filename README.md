@@ -1,6 +1,6 @@
 # RaGenda — Sistema de Agendamiento Monorepo
 
-Sistema fullstack de agendamiento de citas con soporte para cliente público y dashboard administrativo, utilizando un único repositorio monorepo alojado en GitHub y preparado para ser desplegado en Vercel como dos aplicaciones distintas.
+Sistema fullstack de agendamiento de citas con soporte para cliente público y dashboard administrativo, utilizando un único repositorio monorepo alojado en GitHub y desplegado en Vercel como dos aplicaciones distintas.
 
 ## 🚀 Arquitectura
 
@@ -8,7 +8,7 @@ Sistema fullstack de agendamiento de citas con soporte para cliente público y d
 - **Frontend**: Vite + React 18 + TypeScript + TailwindCSS v3
 - **Backend (API)**: Vercel Serverless Functions (`api/` folder en cada app)
 - **Base de Datos**: PostgreSQL (Supabase) + Prisma ORM
-- **Autenticación**: JWT (Access Token 15min) + Refresh Token (7 días) guardados en Upstash Redis
+- **Autenticación**: JWT (Access Token 15min) + Refresh Token (7 días) con Upstash Redis
 - **Emails**: Resend para verificación de cuentas y notificaciones de citas
 
 ## 📁 Estructura del Proyecto
@@ -17,7 +17,11 @@ Sistema fullstack de agendamiento de citas con soporte para cliente público y d
 /
 ├── apps/
 │   ├── web/          # Sitio web público y portal del cliente (puerto 5173)
+│   │   ├── api/      # Serverless Functions → /api/auth, /api/appointments, etc.
+│   │   └── src/      # React frontend
 │   └── admin/        # Dashboard de administración (puerto 5174)
+│       ├── api/      # Serverless Functions → /api/admin/*
+│       └── src/      # React frontend admin
 ├── packages/
 │   └── db/           # Prisma schema, migraciones y cliente compartido
 ├── .env.example      # Variables de entorno requeridas
@@ -33,69 +37,113 @@ Copia el archivo `.env.example` a `.env` y configura tus variables:
 cp .env.example .env
 ```
 Necesitarás:
-- Una base de datos PostgreSQL ([Supabase](https://supabase.com))
-- Una base de datos Redis ([Upstash](https://upstash.com))
-- Una API Key de [Resend](https://resend.com)
+- Una base de datos PostgreSQL → [Supabase](https://supabase.com) (gratuito)
+- Una base de datos Redis → [Upstash](https://upstash.com) (gratuito)
+- Una API Key de email → [Resend](https://resend.com) (gratuito)
 
 ### 2. Instalación y Base de Datos
 
-Instala dependencias y configura la DB:
 ```bash
-# Instala todo en el workspace y genera el cliente Prisma
+# Instala todo en el workspace y genera el cliente Prisma automáticamente
 npm install
 
 # Aplica las migraciones a tu base de datos
 npm run db:migrate
 
-# Corre el seed para tener datos de prueba (Admin y 3 clientes)
+# Seed con datos de prueba (Admin + 3 clientes de ejemplo)
 npm run db:seed
 ```
 
 ### 3. Ejecutar las Aplicaciones
 
-Debido a que usamos un emulador de Vercel (opcional), puedes correr Vite directamente:
-
-**Web (Pública):**
+**Web (Pública) — http://localhost:5173:**
 ```bash
 npm run dev:web
 ```
-*Usuario de prueba: maria@example.com / Client@1234!*
+*Usuario de prueba: `maria@example.com` / `Client@1234!`*
 
-**Admin (Dashboard):**
+**Admin (Dashboard) — http://localhost:5174:**
 ```bash
 npm run dev:admin
 ```
-*Usuario de prueba: admin@ragenda.app / Admin@1234!*
+*Usuario de prueba: `admin@ragenda.app` / `Admin@1234!`*
 
 ---
 
-## 🌐 Despliegue en Vercel
+## 🌐 Deploy en Vercel desde GitHub
 
-El monorepo está diseñado para ser desplegado como **dos proyectos separados en Vercel** desde el mismo repositorio de GitHub.
+El monorepo se despliega como **dos proyectos separados en Vercel** desde el mismo repo.
 
-### Proyecto 1: Web Pública
-1. Nuevo proyecto en Vercel → Importar repositorio
-2. En `Framework Preset`, selecciona **Vite**
-3. En `Root Directory`, selecciona `apps/web`
-4. Configura las variables de entorno de `.env`
-5. Vercel leerá automáticamente el archivo `apps/web/vercel.json`
+### Variables de Entorno (requeridas en ambos proyectos)
 
-### Proyecto 2: Admin Dashboard
-1. Nuevo proyecto en Vercel → Importar repositorio
-2. En `Framework Preset`, selecciona **Vite**
-3. En `Root Directory`, selecciona `apps/admin`
-4. Configura las variables de entorno de `.env`
-5. Vercel leerá automáticamente el archivo `apps/admin/vercel.json`
+Generar secrets seguros:
+```bash
+openssl rand -hex 32   # para JWT_SECRET
+openssl rand -hex 32   # para REFRESH_TOKEN_SECRET
+```
 
-> **Nota sobre Base de Datos en Producción:** Asegúrate de usar las variables `DATABASE_URL` (con PgBouncer/connection pooling) y `DIRECT_URL` (conexión directa) para Prisma.
+| Variable | Descripción |
+|----------|-------------|
+| `DATABASE_URL` | PostgreSQL con pgBouncer (Supabase pooling port 6543) |
+| `DIRECT_URL` | PostgreSQL directo (Supabase port 5432) |
+| `JWT_SECRET` | Secret aleatorio 256-bit para access tokens |
+| `REFRESH_TOKEN_SECRET` | Secret aleatorio 256-bit para refresh tokens |
+| `UPSTASH_REDIS_REST_URL` | URL REST de tu instancia Upstash |
+| `UPSTASH_REDIS_REST_TOKEN` | Token de tu instancia Upstash |
+| `RESEND_API_KEY` | API Key de Resend |
+| `EMAIL_FROM` | `RaGenda <no-reply@tudominio.com>` |
+| `ALLOWED_ORIGINS` | URLs de producción de ambas apps (comma-separated) |
+| `NODE_ENV` | `production` |
+
+### Proyecto 1: Web Pública (`apps/web`)
+
+1. Ve a [vercel.com/new](https://vercel.com/new) → **Import Git Repository** → selecciona `ragenda`
+2. **Root Directory**: `apps/web`
+3. **Framework Preset**: Vite (se detecta automáticamente)
+4. **Build Command**: `cd ../.. && npm install && npm run build:web`
+5. **Output Directory**: `dist`
+6. En **Environment Variables**, agrega todas las de la tabla anterior
+7. Para `ALLOWED_ORIGINS`, una vez tengas la URL del proyecto admin, actualiza este valor
+8. Deploy ✅
+
+### Proyecto 2: Admin Dashboard (`apps/admin`)
+
+1. Ve a [vercel.com/new](https://vercel.com/new) → **Import Git Repository** → selecciona `ragenda` (mismo repo)
+2. **Root Directory**: `apps/admin`
+3. **Framework Preset**: Vite
+4. **Build Command**: `cd ../.. && npm install && npm run build:admin`
+5. **Output Directory**: `dist`
+6. Agrega las mismas variables de entorno
+7. Deploy ✅
+
+### Post-Deploy: Actualizar CORS
+
+Una vez tengas ambas URLs de Vercel, actualiza `ALLOWED_ORIGINS` en ambos proyectos:
+```
+ALLOWED_ORIGINS=https://tu-web.vercel.app,https://tu-admin.vercel.app
+```
+
+### Migración de Base de Datos en Producción
+
+Ejecuta las migraciones apuntando a producción antes del primer deploy:
+```bash
+# Con las variables de producción activas
+npx dotenv -e .env.production -- npm run db:migrate
+# O directamente con la URL de producción
+DATABASE_URL="..." npm run db:migrate
+```
+
+---
 
 ## 🔐 Seguridad Implementada
-- Hash de contraseñas con bcrypt (salt: 12)
-- Prevención de Server-Side Request Forgery y XSS vía React y Zod
-- Rate Limiting estricto por IP con Upstash Redis
-- Blacklist de JWTs en Redis para logout efectivo inmediato
-- Protección de Rutas (Middleware) por Roles (ADMIN vs CLIENT)
-- Security Headers (CSP, X-Frame-Options, HSTS)
+
+- Hash de contraseñas con **bcrypt** (salt rounds: 12)
+- **Rate Limiting** por IP con Upstash Redis (5 intentos / 15 min)
+- **JWT blacklist** en Redis para logout efectivo inmediato
+- Rutas protegidas por roles (`ADMIN` vs `CLIENT`)
+- **Security Headers** (CSP, X-Frame-Options, nosniff, Referrer-Policy)
+- **CORS** estricto — solo orígenes configurados en `ALLOWED_ORIGINS`
 
 ## 🎨 Personalización UI
-El tema global, colores y tipografía se configuran independientemente en el archivo `tailwind.config.ts` y en `index.css` de cada app (web/admin). La web soporta **internacionalización (i18n)** lista para usar en `src/i18n/`.
+
+El tema global, colores y tipografía se configuran en `tailwind.config.ts` y `index.css` de cada app. La web soporta **internacionalización (i18n)** lista para usar en `src/i18n/`.
