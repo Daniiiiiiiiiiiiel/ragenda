@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd ../.. && npm install && npm run build:admin",
+  "buildCommand": "cd ../.. && npm install && npm run build:db && npm run build:admin",
   "outputDirectory": "dist",
   "installCommand": "echo 'skip — handled by buildCommand'",
   "framework": null,
