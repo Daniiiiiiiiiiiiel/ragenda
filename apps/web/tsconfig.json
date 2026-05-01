@@ -11,8 +11,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["node"]
+    "types": ["node", "vite/client"]
   },
-  "include": ["src", "api"],
+  "include": ["src", "api", "vite-env.d.ts"],
   "exclude": ["node_modules", "dist"]
 }
