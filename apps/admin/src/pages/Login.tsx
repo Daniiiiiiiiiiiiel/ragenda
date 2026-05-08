@@ -1,13 +1,21 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '@/contexts/AuthContext';
-import { Shield, AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2, Mail, Lock, Eye, EyeOff, Calendar, Users, Settings, BarChart3 } from 'lucide-react';
+
+/* ── step data for left panel ─────────────────────────────────────── */
+const steps = [
+  { n: 1, title: 'Sign in to\nyour account', active: true },
+  { n: 2, title: 'Access your\ndashboard', active: false },
+  { n: 3, title: 'Manage your\nschedule', active: false },
+];
 
 export default function AdminLogin() {
   const { login, isAuthenticated } = useAdminAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -28,58 +36,164 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4">
-      <div className="w-full max-w-md animate-slide-up">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-3 font-extrabold text-3xl text-white mb-2">
-            <div className="w-12 h-12 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/20">
-              <Shield className="w-6 h-6 text-white" />
+    <div className="login-page">
+
+      {/* ── LEFT PANEL ──────────────────────────────────────────── */}
+      <div className="login-left">
+
+        {/* Glow blob */}
+        <div className="login-glow" />
+
+        {/* Content */}
+        <div className="login-left-content">
+
+          {/* Logo — White version for dark background */}
+          <div className="login-brand" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2.5rem' }}>
+            <div style={{ position: 'relative', width: '64px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img
+                src="/images/logo-light.png"
+                alt="RaGenda Logo"
+                style={{ position: 'absolute', height: '180%', width: 'auto', maxWidth: 'none', objectFit: 'contain' }}
+              />
             </div>
-            <span><span className="text-brand-400">R</span>a<span className="text-brand-400">G</span>enda</span>
+            <span className="login-brand-text" style={{ fontSize: '2rem' }}>
+              <span style={{ color: '#c9b162' }}>R</span>a<span style={{ color: '#c9b162' }}>G</span>enda
+            </span>
           </div>
-          <h1 className="text-xl text-slate-400 mt-2 font-medium">System Administration</h1>
+
+          {/* Hero heading */}
+          <h1 className="login-hero-title">
+            Welcome<br />Back
+          </h1>
+
+          <p className="login-hero-subtitle">
+            Complete these easy steps to manage your scheduling system.
+          </p>
+
+          {/* Steps */}
+          <div className="login-steps">
+            {steps.map((s) => (
+              <div key={s.n} className={`login-step ${s.active ? 'login-step--active' : ''}`}>
+                <div className={`login-step-number ${s.active ? 'login-step-number--active' : ''}`}>
+                  {s.n}
+                </div>
+                <span className="login-step-label">{s.title.split('\n')[0]}<br />{s.title.split('\n')[1]}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-8">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Admin Email</label>
-              <input
-                type="email"
-                required
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@ragenda.app"
+        {/* Bottom features row (desktop only) */}
+        <div className="login-features">
+          {[
+            { icon: Calendar, label: 'Appointments' },
+            { icon: Users, label: 'Clients' },
+            { icon: Settings, label: 'Services' },
+            { icon: BarChart3, label: 'Analytics' },
+          ].map((f) => (
+            <div key={f.label} className="login-feature-pill">
+              <f.icon className="w-3 h-3" />
+              <span>{f.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── RIGHT PANEL (FORM) ──────────────────────────────────── */}
+      <div className="login-right">
+        <div className="login-form-wrapper">
+
+          {/* Mobile Logo — White version */}
+          <div className="md:hidden flex items-center justify-center mb-8">
+            <div style={{ position: 'relative', width: '96px', height: '96px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img
+                src="/images/logo-light.png"
+                alt="RaGenda Logo"
+                style={{ position: 'absolute', left: '-50%', top: '-40%', height: '180%', width: '200%', maxWidth: 'none', objectFit: 'contain' }}
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
-              <input
-                type="password"
-                required
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-              />
+          </div>
+
+          <div className="login-form-header">
+            <h2 className="login-form-title">Sign In</h2>
+            <p className="login-form-subtitle">
+              Enter your admin credentials to access the dashboard.
+            </p>
+          </div>
+
+          {/* Separator */}
+          <div className="login-divider">
+            <div className="login-divider-line" />
+            <span className="login-divider-text">Admin Portal</span>
+            <div className="login-divider-line" />
+          </div>
+
+          <form onSubmit={handleSubmit} className="login-form">
+            {/* Email */}
+            <div className="login-field">
+              <label className="login-label">Email</label>
+              <div className="login-input-wrap">
+                <Mail className="login-input-icon" />
+                <input
+                  type="email"
+                  required
+                  className="login-input"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@ragenda.app"
+                />
+              </div>
             </div>
 
+            {/* Password */}
+            <div className="login-field">
+              <label className="login-label">Password</label>
+              <div className="login-input-wrap">
+                <Lock className="login-input-icon" />
+                <input
+                  type={showPass ? 'text' : 'password'}
+                  required
+                  className="login-input login-input--password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPass((v) => !v)}
+                  className="login-eye-btn"
+                  tabIndex={-1}
+                >
+                  {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              <p className="login-hint">Must be at least 8 characters.</p>
+            </div>
+
+            {/* Error */}
             {error && (
-              <div className="flex items-start gap-2 bg-red-50 text-red-600 p-3 rounded-xl text-sm">
-                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <div className="login-error">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                 <p>{error}</p>
               </div>
             )}
 
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+              className="login-submit"
             >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In to Dashboard'}
+              {loading
+                ? <><Loader2 className="w-5 h-5 animate-spin" /> Signing in…</>
+                : 'Sign In'
+              }
             </button>
           </form>
+
+          <p className="login-footer">
+            RaGenda Admin · Restricted access
+          </p>
         </div>
       </div>
     </div>

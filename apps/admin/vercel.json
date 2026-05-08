@@ -3,23 +3,13 @@
   "buildCommand": "cd ../.. && npm install && npm run build:db && npm run build:admin",
   "outputDirectory": "dist",
   "installCommand": "echo 'skip — handled by buildCommand'",
-  "framework": null,
+  "framework": "vite",
   "functions": {
     "api/**/*.ts": {
       "memory": 512,
       "maxDuration": 30
     }
   },
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
-    },
-    {
-      "source": "/((?!api/).*)",
-      "destination": "/index.html"
-    }
-  ],
   "headers": [
     {
       "source": "/api/(.*)",

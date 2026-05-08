@@ -34,7 +34,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       data: { status: 'CANCELLED', updatedAt: new Date() },
     }),
     prisma.availableSlot.updateMany({
-      where: { date: appointment.date, time: appointment.timeSlot },
+      where: {
+        date: appointment.date,
+        time: appointment.timeSlot,
+        currentBookings: { gt: 0 },
+      },
       data: { currentBookings: { decrement: 1 } },
     }),
   ]);

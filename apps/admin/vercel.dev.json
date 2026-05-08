@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "framework": null,
+  "devCommand": "node mock.js",
+  "functions": {
+    "api/**/*.ts": {
+      "memory": 512,
+      "maxDuration": 30
+    }
+  }
+}

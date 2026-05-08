@@ -49,3 +49,5 @@ packages/db/node_modules/.prisma
 
 # ─── Vercel ───────────────────────────────────────────────────────────────────
 .vercel
+
+.vercel

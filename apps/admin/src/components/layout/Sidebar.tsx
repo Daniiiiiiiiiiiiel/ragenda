@@ -1,17 +1,17 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '@/contexts/AuthContext';
 import {
-  Calendar, LayoutDashboard, Users, Settings,
-  CalendarDays, LogOut, Shield,
+  LayoutDashboard, Calendar, CalendarDays, Users,
+  Settings, LogOut, ChevronRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { to: '/',               icon: <LayoutDashboard className="w-5 h-5" />, label: 'Dashboard' },
-  { to: '/appointments',   icon: <Calendar className="w-5 h-5" />,        label: 'Appointments' },
-  { to: '/availability',   icon: <CalendarDays className="w-5 h-5" />,    label: 'Availability' },
-  { to: '/clients',        icon: <Users className="w-5 h-5" />,           label: 'Clients' },
-  { to: '/settings',       icon: <Settings className="w-5 h-5" />,        label: 'Settings' },
+  { to: '/',             icon: LayoutDashboard, label: 'Dashboard',    end: true  },
+  { to: '/appointments', icon: Calendar,        label: 'Appointments', end: false },
+  { to: '/availability', icon: CalendarDays,    label: 'Availability', end: false },
+  { to: '/clients',      icon: Users,           label: 'Clients',      end: false },
+  { to: '/settings',     icon: Settings,        label: 'Settings',     end: false },
 ];
 
 interface SidebarProps {
@@ -28,69 +28,152 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     navigate('/login');
   };
 
+  const initials = user?.name
+    ? user.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
+    : 'A';
+
   return (
     <>
       {/* Mobile Backdrop */}
       {isOpen && (
-        <div 
-          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 lg:hidden"
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
-      
-      <aside className={cn(
-        "fixed inset-y-0 left-0 w-64 bg-slate-900 flex flex-col z-50 transition-transform duration-300 ease-in-out lg:translate-x-0",
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
-      {/* Brand */}
-      <div className="flex items-center gap-3 px-6 py-5 border-b border-white/10">
-        <div className="w-9 h-9 bg-brand-600 rounded-xl flex items-center justify-center">
-          <Shield className="w-5 h-5 text-white" />
-        </div>
-        <div>
-          <p className="font-extrabold text-white text-lg leading-none">
-            <span className="text-brand-400">R</span>a<span className="text-brand-400">G</span>enda
-          </p>
-          <p className="text-xs text-slate-400 mt-0.5">Admin Panel</p>
-        </div>
-      </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-3 py-5 space-y-1">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            end={item.to === '/'}
-            onClick={() => setIsOpen(false)}
-            className={({ isActive }) => cn('sidebar-link', isActive && 'active')}
-          >
-            {item.icon}
-            {item.label}
-          </NavLink>
-        ))}
-      </nav>
-
-      {/* User section */}
-      <div className="px-3 py-4 border-t border-white/10">
-        <div className="flex items-center gap-3 px-3 py-3 mb-2">
-          <div className="w-8 h-8 rounded-full bg-brand-600/30 flex items-center justify-center flex-shrink-0">
-            <span className="text-brand-300 font-bold text-sm">{user?.name.charAt(0)}</span>
-          </div>
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
-            <p className="text-xs text-slate-400 truncate">{user?.email}</p>
-          </div>
-        </div>
-        <button
-          onClick={handleLogout}
-          className="sidebar-link w-full text-red-400 hover:text-red-300 hover:bg-red-500/10"
+      <aside
+        className={cn(
+          'fixed inset-y-0 left-0 w-64 flex flex-col z-50 transition-transform duration-300 ease-in-out lg:translate-x-0',
+          isOpen ? 'translate-x-0' : '-translate-x-full',
+        )}
+        style={{
+          background: 'linear-gradient(180deg, #151413 0%, #0d0c0b 100%)',
+          borderRight: '1px solid rgba(255,255,255,0.04)',
+        }}
+      >
+        {/* Brand — White Logo */}
+        <div
+          className="flex flex-col items-center justify-center pt-8 pb-6"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
         >
-          <LogOut className="w-4 h-4" />
-          Sign out
-        </button>
-      </div>
-    </aside>
+          <div style={{ position: 'relative', width: '64px', height: '64px', display: 'flex', alignItems: 'center', justifyItems: 'center' }}>
+            <img
+              src="/images/logo-light.png"
+              alt="RaGenda Logo"
+              style={{ position: 'absolute', left: '-50%', top: '-40%', height: '180%', width: '200%', maxWidth: 'none', objectFit: 'contain' }}
+            />
+          </div>
+          <p
+            className="mt-2 text-center"
+            style={{
+              fontSize: '0.6rem',
+              fontWeight: 500,
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase' as const,
+              color: 'rgba(201,177,98,0.4)',
+            }}
+          >
+            Admin Panel
+          </p>
+        </div>
+
+        {/* Nav section label */}
+        <div className="px-5 pt-6 pb-2">
+          <p
+            style={{
+              fontSize: '0.6rem',
+              fontWeight: 600,
+              textTransform: 'uppercase' as const,
+              letterSpacing: '0.15em',
+              color: '#5e5a55',
+            }}
+          >
+            Navigation
+          </p>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 px-3 space-y-0.5 overflow-y-auto">
+          {navItems.map(({ to, icon: Icon, label, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              onClick={() => setIsOpen(false)}
+              className={({ isActive }) => cn(
+                'flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm transition-all duration-200 group relative',
+                isActive
+                  ? 'text-brand-400 font-medium'
+                  : 'text-surface-500 hover:text-surface-300 font-normal'
+              )}
+              style={({ isActive }) => ({
+                background: isActive ? 'rgba(201,177,98,0.06)' : undefined,
+              })}
+            >
+              {({ isActive }) => (
+                <>
+                  {isActive && (
+                    <span
+                      className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-r-full"
+                      style={{ background: '#c9b162' }}
+                    />
+                  )}
+                  <Icon className="w-[18px] h-[18px] flex-shrink-0 transition-transform duration-200 group-hover:scale-105" />
+                  <span className="flex-1">{label}</span>
+                  <ChevronRight className="w-3 h-3 opacity-0 -translate-x-1 transition-all duration-200 group-hover:opacity-30 group-hover:translate-x-0" />
+                </>
+              )}
+            </NavLink>
+          ))}
+        </nav>
+
+        {/* Bottom user section */}
+        <div
+          className="px-3 py-4"
+          style={{
+            borderTop: '1px solid rgba(255,255,255,0.04)',
+            background: 'rgba(255,255,255,0.01)',
+          }}
+        >
+          <div className="flex items-center gap-3 px-3 py-3 mb-1 rounded-lg">
+            <div
+              className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-medium"
+              style={{
+                background: 'rgba(201,177,98,0.1)',
+                color: '#c9b162',
+                border: '1px solid rgba(201,177,98,0.15)',
+              }}
+            >
+              {initials}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium truncate leading-none" style={{ color: '#dedddb' }}>
+                {user?.name}
+              </p>
+              <p className="text-xs truncate mt-0.5" style={{ color: '#5e5a55' }}>
+                {user?.email}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-normal mt-1 transition-colors"
+            style={{ color: '#7c7872' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(220,60,60,0.06)';
+              e.currentTarget.style.color = '#e87c7c';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent';
+              e.currentTarget.style.color = '#7c7872';
+            }}
+          >
+            <LogOut className="w-4 h-4 flex-shrink-0" />
+            <span>Sign out</span>
+          </button>
+        </div>
+      </aside>
     </>
   );
 }

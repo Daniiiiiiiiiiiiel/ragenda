@@ -39,18 +39,47 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!existing) return err(res, 'Appointment not found', 404);
   if (existing.status !== 'PENDING') return err(res, 'Only pending appointments can be updated', 400);
 
-  const updated = await prisma.appointment.update({
-    where: { id },
-    data: { status, adminNotes: adminNotes?.trim() || null, updatedAt: new Date() },
+  // Use a transaction to update appointment + adjust slot count atomically
+  const [updated] = await prisma.$transaction(async (tx) => {
+    const appt = await tx.appointment.update({
+      where: { id },
+      data: { status, adminNotes: adminNotes?.trim() || null, updatedAt: new Date() },
+    });
+
+    // If rejected, free up the slot
+    if (status === 'REJECTED') {
+      await tx.availableSlot.updateMany({
+        where: {
+          date: existing.date,
+          time: existing.timeSlot,
+          currentBookings: { gt: 0 },
+        },
+        data: { currentBookings: { decrement: 1 } },
+      });
+    }
+
+    return [appt];
   });
 
   // Send email notification (fire-and-forget)
   const dateStr = existing.date.toISOString().split('T')[0];
+  const statusLabel = status === 'ACCEPTED' ? 'confirmed' : 'rejected';
+  const statusColor = status === 'ACCEPTED' ? '#4ade80' : '#f87171';
+
   resend.emails.send({
     from: process.env.EMAIL_FROM ?? 'RaGenda <no-reply@ragenda.app>',
     to: existing.user.email,
-    subject: `RaGenda — Appointment ${status}`,
-    html: `<p>Hi ${existing.user.name}, your appointment for <b>${existing.service.name}</b> on <b>${dateStr}</b> at <b>${existing.timeSlot}</b> has been <b>${status.toLowerCase()}</b>. ${adminNotes ? `<br/>Note: ${adminNotes}` : ''}</p>`,
+    subject: `RaGenda — Appointment ${status === 'ACCEPTED' ? 'Confirmed' : 'Rejected'}`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 480px; margin: auto; padding: 32px 24px; background: #f9f9f9; border-radius: 12px;">
+        <h2 style="color: #1a1918; margin-bottom: 8px;">Appointment ${status === 'ACCEPTED' ? 'Confirmed ✓' : 'Rejected'}</h2>
+        <p style="color: #555;">Hi <strong>${existing.user.name}</strong>,</p>
+        <p style="color: #555;">Your appointment for <strong>${existing.service.name}</strong> on <strong>${dateStr}</strong> at <strong>${existing.timeSlot}</strong> has been <span style="color: ${statusColor}; font-weight: bold;">${statusLabel}</span>.</p>
+        ${adminNotes ? `<div style="background: #eee; border-radius: 8px; padding: 12px; margin-top: 16px;"><p style="margin: 0; color: #333; font-size: 14px;"><strong>Note:</strong> ${adminNotes}</p></div>` : ''}
+        <hr style="margin: 24px 0; border: none; border-top: 1px solid #ddd;" />
+        <p style="font-size: 12px; color: #999;">RaGenda — Scheduling System</p>
+      </div>
+    `,
   }).catch(console.error);
 
   return ok(res, updated);
