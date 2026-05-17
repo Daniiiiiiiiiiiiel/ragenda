@@ -55,7 +55,7 @@ function CustomTooltip({ active, payload, label, formatter }: {
         {formatter ? formatter(label ?? '') : label}
       </p>
       <p className="font-medium" style={{ color: '#f7f7f6' }}>
-        {payload[0].value} appointments
+        {payload[0].value} citas
       </p>
     </div>
   );
@@ -86,7 +86,7 @@ export default function Dashboard() {
           className="w-9 h-9 border-2 border-t-transparent rounded-full animate-spin"
           style={{ borderColor: 'rgba(201,177,98,0.3)', borderTopColor: 'transparent' }}
         />
-        <p className="text-sm" style={{ color: '#5e5a55' }}>Loading data…</p>
+        <p className="text-sm" style={{ color: '#5e5a55' }}>Cargando datos…</p>
       </div>
     </div>
   );
@@ -112,7 +112,7 @@ export default function Dashboard() {
         />
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <p className="text-sm mb-1" style={{ color: '#5e5a55', fontWeight: 400 }}>Welcome back</p>
+            <p className="text-sm mb-1" style={{ color: '#5e5a55', fontWeight: 400 }}>Bienvenido de nuevo</p>
             <h2
               style={{
                 fontFamily: "'Cormorant Garamond', Georgia, serif",
@@ -121,17 +121,17 @@ export default function Dashboard() {
                 color: '#f7f7f6',
               }}
             >
-              Dashboard Overview
+              Resumen del Panel
             </h2>
             <p className="text-sm mt-1" style={{ color: '#7c7872' }}>
-              Here's what's happening with your appointments.
+              Aquí está lo que está ocurriendo con tus citas.
             </p>
           </div>
           <div className="flex gap-3">
             {[
               { label: 'Total', value: kpis.total },
-              { label: 'Pending', value: kpis.pending },
-              { label: 'Accepted', value: `${acceptanceRate}%` },
+              { label: 'Pendientes', value: kpis.pending },
+              { label: 'Aceptadas', value: `${acceptanceRate}%` },
             ].map((item) => (
               <div
                 key={item.label}
@@ -148,23 +148,23 @@ export default function Dashboard() {
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 stagger">
         <StatCard
-          title="Total Bookings" value={kpis.total}
-          trend={{ label: 'This month', up: true }}
+          title="Total de Citas" value={kpis.total}
+          trend={{ label: 'Este mes', up: true }}
           icon={<Calendar className="w-4 h-4" />} color="gold"
         />
         <StatCard
-          title="Pending" value={kpis.pending}
-          trend={{ label: 'Requires action', up: false }}
+          title="Pendientes" value={kpis.pending}
+          trend={{ label: 'Requieren atención', up: false }}
           icon={<Clock className="w-4 h-4" />} color="amber"
         />
         <StatCard
-          title="Total Clients" value={kpis.totalClients}
-          trend={{ label: 'All time', up: true }}
+          title="Total de Clientes" value={kpis.totalClients}
+          trend={{ label: 'Todos los tiempos', up: true }}
           icon={<Users className="w-4 h-4" />} color="green"
         />
         <StatCard
-          title="Cancellation Rate" value={`${kpis.cancellationRate}%`}
-          trend={{ label: `${kpis.cancelled} cancelled`, up: false }}
+          title="Tasa de Cancelación" value={`${kpis.cancellationRate}%`}
+          trend={{ label: `${kpis.cancelled} canceladas`, up: false }}
           icon={<XCircle className="w-4 h-4" />} color="red"
         />
       </div>
@@ -176,11 +176,11 @@ export default function Dashboard() {
         <div className="card lg:col-span-2">
           <div className="card-header">
             <div>
-              <h3 className="font-medium" style={{ fontSize: '1.1rem' }}>Appointments Trend</h3>
-              <p className="text-xs mt-0.5" style={{ color: '#5e5a55' }}>Last 30 days</p>
+              <h3 className="font-medium" style={{ fontSize: '1.1rem' }}>Tendencia de Citas</h3>
+              <p className="text-xs mt-0.5" style={{ color: '#5e5a55' }}>Últimos 30 días</p>
             </div>
             <span className="badge" style={{ background: 'rgba(201,177,98,0.08)', color: '#c9b162', border: '1px solid rgba(201,177,98,0.15)' }}>
-              <TrendingUp className="w-3 h-3" /> Live
+              <TrendingUp className="w-3 h-3" /> En Vivo
             </span>
           </div>
           <div className="card-body pt-2">
@@ -219,13 +219,13 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-header">
             <div>
-              <h3 className="font-medium" style={{ fontSize: '1.1rem' }}>By Service</h3>
-              <p className="text-xs mt-0.5" style={{ color: '#5e5a55' }}>Distribution</p>
+              <h3 className="font-medium" style={{ fontSize: '1.1rem' }}>Por Servicio</h3>
+              <p className="text-xs mt-0.5" style={{ color: '#5e5a55' }}>Distribución</p>
             </div>
           </div>
           <div className="card-body pt-2">
             {charts.byService.length === 0 ? (
-              <div className="h-48 flex items-center justify-center text-sm" style={{ color: '#5e5a55' }}>No data yet</div>
+              <div className="h-48 flex items-center justify-center text-sm" style={{ color: '#5e5a55' }}>Sin datos aún</div>
             ) : (
               <>
                 <div className="h-44 w-full">
@@ -272,8 +272,8 @@ export default function Dashboard() {
         <div className="card lg:col-span-2">
           <div className="card-header">
             <div>
-              <h3 className="font-medium" style={{ fontSize: '1.1rem' }}>By Day of Week</h3>
-              <p className="text-xs mt-0.5" style={{ color: '#5e5a55' }}>Appointment distribution</p>
+              <h3 className="font-medium" style={{ fontSize: '1.1rem' }}>Por Día de la Semana</h3>
+              <p className="text-xs mt-0.5" style={{ color: '#5e5a55' }}>Distribución de citas</p>
             </div>
           </div>
           <div className="card-body pt-2">
@@ -307,13 +307,13 @@ export default function Dashboard() {
         {/* Recent bookings */}
         <div className="card">
           <div className="card-header">
-            <h3 className="font-medium" style={{ fontSize: '1.1rem' }}>Recent Bookings</h3>
+            <h3 className="font-medium" style={{ fontSize: '1.1rem' }}>Reservas Recientes</h3>
             <ArrowUpRight className="w-4 h-4" style={{ color: '#48453f' }} />
           </div>
           <div className="card-body pt-2">
             <div className="space-y-2">
               {recent.length === 0 ? (
-                <p className="text-sm text-center py-6" style={{ color: '#5e5a55' }}>No recent bookings</p>
+                <p className="text-sm text-center py-6" style={{ color: '#5e5a55' }}>Sin reservas recientes</p>
               ) : (
                 recent.map((a) => (
                   <div

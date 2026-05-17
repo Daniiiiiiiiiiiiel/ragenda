@@ -54,6 +54,10 @@ export const api = {
     cache.clear();
     return request<T>(path, { method: 'POST', body: JSON.stringify(data) });
   },
+  put: async <T>(path: string, data?: unknown) => {
+    cache.clear();
+    return request<T>(path, { method: 'PUT', body: JSON.stringify(data) });
+  },
   patch: async <T>(path: string, data?: unknown) => {
     cache.clear();
     return request<T>(path, { method: 'PATCH', body: JSON.stringify(data) });

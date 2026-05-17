@@ -34,7 +34,7 @@ export default function App() {
                 <div className="min-h-screen flex items-center justify-center">
                   <div className="text-center">
                     <h1 className="text-6xl font-black text-slate-200 mb-4">404</h1>
-                    <p className="text-slate-400">Page not found</p>
+                    <p className="text-slate-400">Página no encontrada</p>
                   </div>
                 </div>
               } />

@@ -25,7 +25,7 @@ export function Footer() {
 
           {/* Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-sm">Quick links</h3>
+            <h3 className="text-white font-semibold mb-4 text-sm">{t('footer.quickLinks')}</h3>
             <nav className="flex flex-col gap-2.5">
               {[
                 { to: '/', label: t('nav.home') },
@@ -42,7 +42,7 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-sm">Contact</h3>
+            <h3 className="text-white font-semibold mb-4 text-sm">{t('footer.contact')}</h3>
             <div className="flex flex-col gap-3">
               <a href="mailto:hello@ragenda.app" className="flex items-center gap-2.5 text-sm hover:text-brand-400 transition-colors">
                 <Mail className="w-4 h-4" /> hello@ragenda.app
@@ -51,7 +51,8 @@ export function Footer() {
                 <Phone className="w-4 h-4" /> +1 (234) 567-890
               </a>
               <span className="flex items-center gap-2.5 text-sm">
-                <MapPin className="w-4 h-4" /> Available online worldwide
+                <MapPin className="w-4 h-4" />
+                {t('footer.available')}
               </span>
             </div>
           </div>
@@ -59,7 +60,7 @@ export function Footer() {
 
         <div className="border-t border-slate-800 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-2">
           <p className="text-xs">© {year} RaGenda. {t('footer.rights')}</p>
-          <p className="text-xs">Built with ❤️ and TypeScript</p>
+          <p className="text-xs">{t('footer.builtWith')}</p>
         </div>
       </div>
     </footer>

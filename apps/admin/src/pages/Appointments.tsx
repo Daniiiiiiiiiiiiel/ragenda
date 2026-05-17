@@ -19,11 +19,11 @@ function useDebounce<T>(value: T, delay = 400): T {
 }
 
 const STATUS_OPTIONS = [
-  { value: '',          label: 'All Statuses' },
-  { value: 'PENDING',   label: 'Pending'   },
-  { value: 'ACCEPTED',  label: 'Accepted'  },
-  { value: 'REJECTED',  label: 'Rejected'  },
-  { value: 'CANCELLED', label: 'Cancelled' },
+  { value: '',          label: 'Todos los estados' },
+  { value: 'PENDING',   label: 'Pendiente'   },
+  { value: 'ACCEPTED',  label: 'Aceptada'  },
+  { value: 'REJECTED',  label: 'Rechazada'  },
+  { value: 'CANCELLED', label: 'Cancelada' },
 ];
 
 export default function Appointments() {
@@ -61,7 +61,7 @@ export default function Appointments() {
 
   const handleStatusUpdate = async (id: string, status: 'ACCEPTED' | 'REJECTED') => {
     if (updatingRef.current.has(id)) return;
-    const notes = status === 'REJECTED' ? prompt('Reason for rejection (optional):') : '';
+    const notes = status === 'REJECTED' ? prompt('Motivo del rechazo (opcional):') : '';
     if (notes === null && status === 'REJECTED') return;
 
     updatingRef.current.add(id);
@@ -84,8 +84,8 @@ export default function Appointments() {
 
       <div className="page-header">
         <div>
-          <h1 className="page-title">Appointments</h1>
-          <p className="page-subtitle">{total} booking{total !== 1 ? 's' : ''} found</p>
+          <h1 className="page-title">Citas</h1>
+          <p className="page-subtitle">{total} reserva{total !== 1 ? 's' : ''} encontrada{total !== 1 ? 's' : ''}</p>
         </div>
       </div>
 
@@ -96,7 +96,7 @@ export default function Appointments() {
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#5e5a55' }} />
             <input
               type="text"
-              placeholder="Search by name or email…"
+              placeholder="Buscar por nombre o correo…"
               className="input pl-10"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -123,11 +123,11 @@ export default function Appointments() {
           <table className="w-full text-left text-sm">
             <thead>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                <th className="table-header-cell">Client</th>
-                <th className="table-header-cell">Service</th>
-                <th className="table-header-cell">Date &amp; Time</th>
-                <th className="table-header-cell">Status</th>
-                <th className="table-header-cell text-right">Actions</th>
+                <th className="table-header-cell">Cliente</th>
+                <th className="table-header-cell">Servicio</th>
+                <th className="table-header-cell">Fecha y Hora</th>
+                <th className="table-header-cell">Estado</th>
+                <th className="table-header-cell text-right">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -136,7 +136,7 @@ export default function Appointments() {
                   <td colSpan={5} className="px-6 py-12 text-center">
                     <div className="flex flex-col items-center gap-2">
                       <Loader2 className="w-5 h-5 animate-spin" style={{ color: '#c9b162' }} />
-                      <span className="text-sm" style={{ color: '#5e5a55' }}>Loading appointments…</span>
+                      <span className="text-sm" style={{ color: '#5e5a55' }}>Cargando citas…</span>
                     </div>
                   </td>
                 </tr>
@@ -147,15 +147,15 @@ export default function Appointments() {
                       <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.03)' }}>
                         <Search className="w-5 h-5" style={{ color: '#48453f' }} />
                       </div>
-                      <p className="text-sm" style={{ color: '#7c7872' }}>No appointments found</p>
-                      <p className="text-xs" style={{ color: '#48453f' }}>Try adjusting your search or filters</p>
+                      <p className="text-sm" style={{ color: '#7c7872' }}>No se encontraron citas</p>
+                      <p className="text-xs" style={{ color: '#48453f' }}>Intenta ajustar tu búsqueda o filtros</p>
                     </div>
                   </td>
                 </tr>
               ) : (
                 appointments.map((a) => (
                   <tr key={a.id} className="table-row">
-                    <td className="table-cell" data-label="Client">
+                    <td className="table-cell" data-label="Cliente">
                       <div className="flex items-center gap-3">
                         <div
                           className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs shrink-0"
@@ -169,7 +169,7 @@ export default function Appointments() {
                         </div>
                       </div>
                     </td>
-                    <td className="table-cell" data-label="Service">
+                    <td className="table-cell" data-label="Servicio">
                       <div className="flex flex-col items-end sm:items-start">
                         <div className="flex items-center gap-2">
                           <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: a.service.color }} />
@@ -178,18 +178,18 @@ export default function Appointments() {
                         <p className="text-xs mt-0.5" style={{ color: '#5e5a55' }}>{a.service.duration} min</p>
                       </div>
                     </td>
-                    <td className="table-cell" data-label="Date & Time">
+                    <td className="table-cell" data-label="Fecha y Hora">
                       <div className="flex flex-col items-end sm:items-start">
                         <p style={{ color: '#dedddb', fontWeight: 500 }}>{formatDateLocal(a.date)}</p>
                         <p className="text-xs mt-0.5" style={{ color: '#5e5a55' }}>{formatTime(a.timeSlot)}</p>
                       </div>
                     </td>
-                    <td className="table-cell" data-label="Status">
+                    <td className="table-cell" data-label="Estado">
                       <span className={cn('badge', `badge-${a.status.toLowerCase()}`)}>
                         {a.status.charAt(0) + a.status.slice(1).toLowerCase()}
                       </span>
                     </td>
-                    <td className="table-cell sm:text-right" data-label="Actions">
+                    <td className="table-cell sm:text-right" data-label="Acciones">
                       {a.status === 'PENDING' && (
                         <div className="flex justify-end gap-1.5">
                           {updatingId === a.id ? (
@@ -199,7 +199,7 @@ export default function Appointments() {
                               <button
                                 onClick={() => handleStatusUpdate(a.id, 'ACCEPTED')}
                                 className="p-2 rounded-lg transition-colors"
-                                title="Accept"
+                                title="Aceptar"
                                 style={{ color: '#4ade80' }}
                               >
                                 <CheckCircle2 className="w-4.5 h-4.5" />
@@ -207,7 +207,7 @@ export default function Appointments() {
                               <button
                                 onClick={() => handleStatusUpdate(a.id, 'REJECTED')}
                                 className="p-2 rounded-lg transition-colors"
-                                title="Reject"
+                                title="Rechazar"
                                 style={{ color: '#f87171' }}
                               >
                                 <XCircle className="w-4.5 h-4.5" />
@@ -227,7 +227,7 @@ export default function Appointments() {
         {/* Pagination */}
         <div className="card-footer flex items-center justify-between">
           <span className="text-sm" style={{ color: '#5e5a55' }}>
-            Page <span style={{ color: '#c5c3c0', fontWeight: 500 }}>{page}</span> of{' '}
+            Página <span style={{ color: '#c5c3c0', fontWeight: 500 }}>{page}</span> de{' '}
             <span style={{ color: '#c5c3c0', fontWeight: 500 }}>{totalPages || 1}</span>
           </span>
           <div className="flex gap-2">

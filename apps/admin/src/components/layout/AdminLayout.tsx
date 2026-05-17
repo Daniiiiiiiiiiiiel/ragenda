@@ -4,11 +4,11 @@ import { Sidebar } from './Sidebar';
 import { Menu, Bell, Search } from 'lucide-react';
 
 const pageLabels: Record<string, { title: string; subtitle: string }> = {
-  '/':             { title: 'Dashboard',    subtitle: 'Overview of your scheduling system' },
-  '/appointments': { title: 'Appointments', subtitle: 'Manage and review client bookings'  },
-  '/availability': { title: 'Availability', subtitle: 'Control your schedule and capacity'  },
-  '/clients':      { title: 'Clients',      subtitle: 'View and manage registered clients'  },
-  '/settings':     { title: 'Settings',     subtitle: 'Configure services and preferences'  },
+  '/':             { title: 'Panel',           subtitle: 'Resumen de tu sistema de agendamiento' },
+  '/appointments': { title: 'Citas',           subtitle: 'Administra y revisa las reservas de clientes' },
+  '/availability': { title: 'Disponibilidad',  subtitle: 'Controla tu horario y capacidad' },
+  '/clients':      { title: 'Clientes',         subtitle: 'Visualiza y administra clientes registrados' },
+  '/settings':     { title: 'Configuración',   subtitle: 'Configura servicios y preferencias' },
 };
 
 export function AdminLayout() {
@@ -39,7 +39,7 @@ export function AdminLayout() {
               onClick={() => setSidebarOpen(true)}
               className="lg:hidden p-2 -ml-1 rounded-lg transition-colors"
               style={{ color: '#7c7872' }}
-              aria-label="Open menu"
+              aria-label="Abrir menú"
             >
               <Menu className="w-5 h-5" />
             </button>
@@ -83,7 +83,7 @@ export function AdminLayout() {
               }}
             >
               <Search className="w-3.5 h-3.5 flex-shrink-0" />
-              <span className="text-xs">Search…</span>
+              <span className="text-xs">Buscar…</span>
               <kbd
                 className="ml-auto text-xs font-medium px-1.5 py-0.5 rounded"
                 style={{

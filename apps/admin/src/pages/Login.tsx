@@ -5,9 +5,9 @@ import { AlertCircle, Loader2, Mail, Lock, Eye, EyeOff, Calendar, Users, Setting
 
 /* ── step data for left panel ─────────────────────────────────────── */
 const steps = [
-  { n: 1, title: 'Sign in to\nyour account', active: true },
-  { n: 2, title: 'Access your\ndashboard', active: false },
-  { n: 3, title: 'Manage your\nschedule', active: false },
+  { n: 1, title: 'Iniciar sesión\nen tu cuenta', active: true },
+  { n: 2, title: 'Acceder a tu\npanel', active: false },
+  { n: 3, title: 'Gestionar tu\nagenda', active: false },
 ];
 
 export default function AdminLogin() {
@@ -29,7 +29,7 @@ export default function AdminLogin() {
       await login(email, password);
       navigate('/');
     } catch (err: unknown) {
-      setError((err as Error).message || 'Invalid credentials');
+      setError((err as Error).message || 'Credenciales inválidas');
     } finally {
       setLoading(false);
     }
@@ -63,11 +63,11 @@ export default function AdminLogin() {
 
           {/* Hero heading */}
           <h1 className="login-hero-title">
-            Welcome<br />Back
+            Bienvenido<br />de Nuevo
           </h1>
 
           <p className="login-hero-subtitle">
-            Complete these easy steps to manage your scheduling system.
+            Completa estos pasos para gestionar tu sistema de agendamiento.
           </p>
 
           {/* Steps */}
@@ -86,10 +86,10 @@ export default function AdminLogin() {
         {/* Bottom features row (desktop only) */}
         <div className="login-features">
           {[
-            { icon: Calendar, label: 'Appointments' },
-            { icon: Users, label: 'Clients' },
-            { icon: Settings, label: 'Services' },
-            { icon: BarChart3, label: 'Analytics' },
+            { icon: Calendar, label: 'Citas' },
+            { icon: Users, label: 'Clientes' },
+            { icon: Settings, label: 'Servicios' },
+            { icon: BarChart3, label: 'Analíticas' },
           ].map((f) => (
             <div key={f.label} className="login-feature-pill">
               <f.icon className="w-3 h-3" />
@@ -115,23 +115,23 @@ export default function AdminLogin() {
           </div>
 
           <div className="login-form-header">
-            <h2 className="login-form-title">Sign In</h2>
+            <h2 className="login-form-title">Iniciar Sesión</h2>
             <p className="login-form-subtitle">
-              Enter your admin credentials to access the dashboard.
+              Ingresa tus credenciales de administrador para acceder al panel.
             </p>
           </div>
 
           {/* Separator */}
           <div className="login-divider">
             <div className="login-divider-line" />
-            <span className="login-divider-text">Admin Portal</span>
+            <span className="login-divider-text">Portal Admin</span>
             <div className="login-divider-line" />
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
             {/* Email */}
             <div className="login-field">
-              <label className="login-label">Email</label>
+              <label className="login-label">Correo electrónico</label>
               <div className="login-input-wrap">
                 <Mail className="login-input-icon" />
                 <input
@@ -147,7 +147,7 @@ export default function AdminLogin() {
 
             {/* Password */}
             <div className="login-field">
-              <label className="login-label">Password</label>
+              <label className="login-label">Contraseña</label>
               <div className="login-input-wrap">
                 <Lock className="login-input-icon" />
                 <input
@@ -156,7 +156,7 @@ export default function AdminLogin() {
                   className="login-input login-input--password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder="Ingresa tu contraseña"
                 />
                 <button
                   type="button"
@@ -167,7 +167,7 @@ export default function AdminLogin() {
                   {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              <p className="login-hint">Must be at least 8 characters.</p>
+              <p className="login-hint">Mín. 8 caracteres.</p>
             </div>
 
             {/* Error */}
@@ -185,14 +185,14 @@ export default function AdminLogin() {
               className="login-submit"
             >
               {loading
-                ? <><Loader2 className="w-5 h-5 animate-spin" /> Signing in…</>
-                : 'Sign In'
+                ? <><Loader2 className="w-5 h-5 animate-spin" /> Iniciando sesión…</>
+                : 'Iniciar Sesión'
               }
             </button>
           </form>
 
           <p className="login-footer">
-            RaGenda Admin · Restricted access
+            RaGenda Admin · Acceso restringido
           </p>
         </div>
       </div>

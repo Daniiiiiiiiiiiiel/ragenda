@@ -14,8 +14,8 @@ const schema = z.object({
   password: z
     .string()
     .min(8)
-    .regex(/[A-Z]/, 'Requires uppercase letter')
-    .regex(/[0-9]/, 'Requires a number'),
+    .regex(/[A-Z]/, 'Debe contener al menos una mayúscula')
+    .regex(/[0-9]/, 'Debe contener al menos un número'),
   phone: z.string().max(20).optional(),
 });
 

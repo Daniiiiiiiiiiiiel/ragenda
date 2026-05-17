@@ -60,11 +60,11 @@ export default function Settings() {
     setForm((f) => ({ ...f, [field]: value }));
 
   const handleSave = async () => {
-    if (!form.name.trim()) { setFormError('Name is required.'); return; }
+    if (!form.name.trim()) { setFormError('El nombre del servicio es obligatorio.'); return; }
     const dur = parseInt(form.duration);
-    if (isNaN(dur) || dur < 5 || dur > 480) { setFormError('Duration must be 5–480 minutes.'); return; }
+    if (isNaN(dur) || dur < 5 || dur > 480) { setFormError('La duración debe estar entre 5 y 480 minutos.'); return; }
     const price = form.price.trim() ? parseFloat(form.price) : undefined;
-    if (price !== undefined && (isNaN(price) || price <= 0)) { setFormError('Price must be a positive number.'); return; }
+    if (price !== undefined && (isNaN(price) || price <= 0)) { setFormError('El precio debe ser un número positivo.'); return; }
 
     setSaving(true); setFormError('');
     const payload = {
@@ -83,7 +83,7 @@ export default function Settings() {
       }
       closeModal();
     } catch (e: unknown) {
-      setFormError((e as Error).message ?? 'Something went wrong.');
+      setFormError((e as Error).message ?? 'Ocurrió un error inesperado.');
     } finally { setSaving(false); }
   };
 
@@ -103,8 +103,8 @@ export default function Settings() {
 
         <div className="page-header">
           <div>
-            <h1 className="page-title">Settings</h1>
-            <p className="page-subtitle">Configure services and general preferences</p>
+            <h1 className="page-title">Configuración</h1>
+            <p className="page-subtitle">Administra los servicios y preferencias generales</p>
           </div>
         </div>
 
@@ -115,27 +115,27 @@ export default function Settings() {
                 Services
               </h2>
               <p className="text-xs mt-0.5" style={{ color: '#5e5a55' }}>
-                {services.length} service{services.length !== 1 ? 's' : ''} configured
+                {services.length} servicio{services.length !== 1 ? 's' : ''} configurado{services.length !== 1 ? 's' : ''}
               </p>
             </div>
             <button onClick={openCreate} className="btn-primary btn-sm gap-1.5">
-              <Plus className="w-3.5 h-3.5" /> New Service
+              <Plus className="w-3.5 h-3.5" /> Nuevo Servicio
             </button>
           </div>
 
           {loading ? (
             <div className="py-16 flex flex-col items-center gap-2">
               <Loader2 className="w-5 h-5 animate-spin" style={{ color: '#c9b162' }} />
-              <span className="text-sm" style={{ color: '#5e5a55' }}>Loading services…</span>
+              <span className="text-sm" style={{ color: '#5e5a55' }}>Cargando servicios…</span>
             </div>
           ) : services.length === 0 ? (
             <div className="py-16 flex flex-col items-center gap-3">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(201,177,98,0.06)' }}>
                 <Sparkles className="w-6 h-6" style={{ color: '#c9b162' }} />
               </div>
-              <p className="text-sm" style={{ color: '#a09d98', fontWeight: 500 }}>No services yet</p>
+              <p className="text-sm" style={{ color: '#a09d98', fontWeight: 500 }}>Sin servicios aún</p>
               <button onClick={openCreate} className="text-sm hover:underline" style={{ color: '#c9b162', fontWeight: 500 }}>
-                Create your first service →
+                Crear tu primer servicio →
               </button>
             </div>
           ) : (
@@ -161,10 +161,10 @@ export default function Settings() {
                         <h3 style={{ color: '#f7f7f6', fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '1.05rem' }}>
                           {svc.name}
                         </h3>
-                        {!svc.isActive && <span className="badge badge-rejected">Inactive</span>}
+                        {!svc.isActive && <span className="badge badge-rejected">Inactivo</span>}
                       </div>
                       <p className="text-sm mt-0.5 line-clamp-1" style={{ color: '#7c7872' }}>
-                        {svc.description || 'No description provided.'}
+                        {svc.description || 'Sin descripción.'}
                       </p>
                       <div className="flex items-center gap-4 mt-2">
                         <span className="flex items-center gap-1.5 text-xs" style={{ color: '#5e5a55', fontWeight: 500 }}>
@@ -183,7 +183,7 @@ export default function Settings() {
 
                   <div className="flex items-center gap-2 sm:ml-auto flex-shrink-0">
                     <button onClick={() => openEdit(svc)} className="btn-secondary btn-sm gap-1.5">
-                      <Edit2 className="w-3.5 h-3.5" /> Edit
+                      <Edit2 className="w-3.5 h-3.5" /> Editar
                     </button>
                     <button
                       onClick={() => handleToggleActive(svc.id, svc.isActive)}
@@ -194,7 +194,7 @@ export default function Settings() {
                         color: svc.isActive ? '#f87171' : '#4ade80',
                       }}
                     >
-                      {svc.isActive ? 'Deactivate' : 'Activate'}
+                      {svc.isActive ? 'Desactivar' : 'Activar'}
                     </button>
                   </div>
                 </div>
@@ -222,7 +222,7 @@ export default function Settings() {
             {/* Modal header */}
             <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
               <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '1.15rem', fontWeight: 500, color: '#f7f7f6' }}>
-                {editingId ? 'Edit Service' : 'New Service'}
+                {editingId ? 'Editar Servicio' : 'Nuevo Servicio'}
               </h2>
               <button
                 onClick={closeModal}
@@ -236,11 +236,11 @@ export default function Settings() {
             {/* Modal body */}
             <div className="px-6 py-5 space-y-4">
               <div>
-                <label className="label">Service Name <span style={{ color: '#f87171' }}>*</span></label>
+                <label className="label">Nombre del Servicio <span style={{ color: '#f87171' }}>*</span></label>
                 <input
                   ref={nameRef}
                   type="text" maxLength={80} className="input"
-                  placeholder="e.g. Deep Tissue Massage"
+                  placeholder="Ej. Masaje de tejido profundo"
                   value={form.name}
                   onChange={(e) => set('name', e.target.value)}
                 />
@@ -248,7 +248,7 @@ export default function Settings() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="label">Duration (min) <span style={{ color: '#f87171' }}>*</span></label>
+                  <label className="label">Duración (min) <span style={{ color: '#f87171' }}>*</span></label>
                   <input
                     type="number" min={5} max={480} className="input"
                     value={form.duration}
@@ -256,10 +256,10 @@ export default function Settings() {
                   />
                 </div>
                 <div>
-                  <label className="label">Price ($)</label>
+                  <label className="label">Precio ($)</label>
                   <input
                     type="number" min={0} step={0.01} className="input"
-                    placeholder="Optional"
+                    placeholder="Opcional"
                     value={form.price}
                     onChange={(e) => set('price', e.target.value)}
                   />
@@ -267,10 +267,10 @@ export default function Settings() {
               </div>
 
               <div>
-                <label className="label">Description</label>
+                <label className="label">Descripción</label>
                 <textarea
                   rows={3} maxLength={500} className="input resize-none"
-                  placeholder="Short description visible to clients…"
+                  placeholder="Descripción corta visible para los clientes…"
                   value={form.description}
                   onChange={(e) => set('description', e.target.value)}
                 />
@@ -320,7 +320,7 @@ export default function Settings() {
                   <span className={cn('toggle-thumb', form.isActive && 'translate-x-5')} />
                 </button>
                 <span className="text-sm" style={{ color: '#c5c3c0', fontWeight: 500 }}>
-                  {form.isActive ? 'Active' : 'Inactive'}
+                  {form.isActive ? 'Activo' : 'Inactivo'}
                 </span>
               </div>
 
@@ -337,14 +337,14 @@ export default function Settings() {
             {/* Modal footer */}
             <div className="flex gap-3 px-6 py-4" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
               <button type="button" onClick={closeModal} className="btn-secondary flex-1" disabled={saving}>
-                Cancel
+                Cancelar
               </button>
               <button type="button" onClick={handleSave} disabled={saving} className="btn-primary flex-1">
                 {saving
                   ? <Loader2 className="w-4 h-4 animate-spin" />
                   : editingId
-                  ? <><Check className="w-4 h-4" /> Save Changes</>
-                  : <><Plus className="w-4 h-4" /> Create Service</>
+                  ? <><Check className="w-4 h-4" /> Guardar Cambios</>
+                  : <><Plus className="w-4 h-4" /> Crear Servicio</>
                 }
               </button>
             </div>

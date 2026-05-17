@@ -7,11 +7,11 @@ import {
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { to: '/',             icon: LayoutDashboard, label: 'Dashboard',    end: true  },
-  { to: '/appointments', icon: Calendar,        label: 'Appointments', end: false },
-  { to: '/availability', icon: CalendarDays,    label: 'Availability', end: false },
-  { to: '/clients',      icon: Users,           label: 'Clients',      end: false },
-  { to: '/settings',     icon: Settings,        label: 'Settings',     end: false },
+  { to: '/',             icon: LayoutDashboard, label: 'Panel',          end: true  },
+  { to: '/appointments', icon: Calendar,        label: 'Citas',         end: false },
+  { to: '/availability', icon: CalendarDays,    label: 'Disponibilidad', end: false },
+  { to: '/clients',      icon: Users,           label: 'Clientes',       end: false },
+  { to: '/settings',     icon: Settings,        label: 'Configuración',  end: false },
 ];
 
 interface SidebarProps {
@@ -74,7 +74,7 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               color: 'rgba(201,177,98,0.4)',
             }}
           >
-            Admin Panel
+            Panel Admin
           </p>
         </div>
 
@@ -89,7 +89,7 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               color: '#5e5a55',
             }}
           >
-            Navigation
+            Navegación
           </p>
         </div>
 
@@ -170,7 +170,7 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             }}
           >
             <LogOut className="w-4 h-4 flex-shrink-0" />
-            <span>Sign out</span>
+            <span>Cerrar sesión</span>
           </button>
         </div>
       </aside>
