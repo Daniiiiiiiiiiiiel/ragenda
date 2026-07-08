@@ -7,7 +7,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
-
 const schema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
