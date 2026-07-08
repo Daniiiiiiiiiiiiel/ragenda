@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "cd ../.. && npm install --legacy-peer-deps && npm run build:db && npm run build:admin",
+  "buildCommand": "cd ../.. && npm run build:db && npm run build:admin",
   "outputDirectory": "dist",
-  "installCommand": "echo 'skip — handled by buildCommand'",
+  "installCommand": "cd ../.. && npm install --legacy-peer-deps",
   "framework": null,
   "functions": {
     "api/**/*.ts": {
