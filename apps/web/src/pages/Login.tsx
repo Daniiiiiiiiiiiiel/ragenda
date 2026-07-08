@@ -42,9 +42,7 @@ export default function Login() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2.5 font-extrabold text-2xl text-slate-900 mb-2">
-            <div className="w-12 h-12 bg-brand-600 rounded-xl flex items-center justify-center shadow-md">
-              <img src="/assets/logo.png" alt="Rom.Code" className="w-8 h-8 object-contain" />
-            </div>
+            <img src="/assets/logo.png" alt="Rom.Code" className="w-8 h-8 object-contain" />
             <span><span className="text-brand-600">R</span>om<span className="text-brand-600">.</span>Code</span>
           </div>
           <h1 className="text-2xl font-bold text-slate-900 mt-4">{t('auth.login')}</h1>

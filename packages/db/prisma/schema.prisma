@@ -127,11 +127,12 @@ model EmailVerification {
 }
 
 model ScheduleConfig {
-  id              String   @id @default(cuid())
-  workDays        Json     // e.g. [1, 2, 3, 4, 5] (0=Sun … 6=Sat)
-  startTime       String   @default("09:00")
-  endTime         String   @default("17:00")
-  intervalMinutes Int      @default(60)
-  maxCapacity     Int      @default(1)
-  updatedAt       DateTime @updatedAt
+  id                String   @id @default(cuid())
+  workDays          Json     // e.g. [1, 2, 3, 4, 5] (0=Sun … 6=Sat)
+  startTime         String   @default("09:00")
+  endTime           String   @default("17:00")
+  intervalMinutes   Int      @default(60)
+  maxCapacity       Int      @default(1)
+  bookingWindowDays Int      @default(30)
+  updatedAt         DateTime @updatedAt
 }
