@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
-import { Calendar, Menu, X, Globe } from 'lucide-react';
+import { Menu, X, Globe } from 'lucide-react';
+import { Logo } from '@/components/ui/Logo';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
 import i18n from '@/i18n';
@@ -41,12 +42,9 @@ export function Navbar() {
         <nav className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 font-extrabold text-xl text-slate-900">
-            <div className="w-8 h-8 bg-brand-600 rounded-xl flex items-center justify-center shadow-sm">
-              <Calendar className="w-4.5 h-4.5 text-white" />
-            </div>
+            <Logo size={34} />
             <span>
-              <span className="text-brand-600">R</span>om
-              <span className="text-brand-600">.</span>Code
+              <span className="text-brand-600">R</span>om<span className="text-brand-600">.</span>Code
             </span>
           </Link>
 

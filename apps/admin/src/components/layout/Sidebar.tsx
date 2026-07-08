@@ -2,8 +2,9 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '@/contexts/AuthContext';
 import {
   Calendar, LayoutDashboard, Users, Settings,
-  CalendarDays, LogOut, Shield,
+  CalendarDays, LogOut,
 } from 'lucide-react';
+import { Logo } from '@/components/ui/Logo';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -44,9 +45,7 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       )}>
       {/* Brand */}
       <div className="flex items-center gap-3 px-6 py-5 border-b border-white/10">
-        <div className="w-9 h-9 bg-brand-600 rounded-xl flex items-center justify-center">
-          <Shield className="w-5 h-5 text-white" />
-        </div>
+        <Logo size={36} />
         <div>
           <p className="font-extrabold text-white text-lg leading-none">
             <span className="text-brand-400">R</span>om<span className="text-brand-400">.</span>Code

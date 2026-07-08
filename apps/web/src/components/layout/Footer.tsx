@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Calendar, Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
+import { Logo } from '@/components/ui/Logo';
 
 export function Footer() {
   const { t } = useTranslation();
@@ -13,9 +14,7 @@ export function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 bg-brand-600 rounded-xl flex items-center justify-center">
-                <Calendar className="w-4 h-4 text-white" />
-              </div>
+              <Logo size={32} />
               <span className="font-extrabold text-xl text-white">
                 <span className="text-brand-400">R</span>om<span className="text-brand-400">.</span>Code
               </span>

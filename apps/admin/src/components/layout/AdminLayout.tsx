@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Menu } from 'lucide-react';
+import { Logo } from '@/components/ui/Logo';
 
 export function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -12,8 +13,11 @@ export function AdminLayout() {
       <main className="flex-1 w-full lg:ml-64 min-h-screen overflow-x-hidden flex flex-col">
         {/* Mobile Header */}
         <div className="lg:hidden p-4 bg-white border-b border-slate-200 flex items-center justify-between sticky top-0 z-20">
-          <div className="font-extrabold text-slate-900 text-lg leading-none">
-            <span className="text-brand-600">R</span>om<span className="text-brand-600">.</span>Code
+          <div className="flex items-center gap-2">
+            <Logo size={28} />
+            <div className="font-extrabold text-slate-900 text-lg leading-none">
+              <span className="text-brand-600">R</span>om<span className="text-brand-600">.</span>Code
+            </div>
           </div>
           <button onClick={() => setSidebarOpen(true)} className="p-2 -mr-2 text-slate-600 hover:bg-slate-100 rounded-lg">
             <Menu className="w-6 h-6" />
