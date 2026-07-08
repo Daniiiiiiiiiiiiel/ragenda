@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd ../.. && npm install && npm run db:generate && npm run build:db && npm run build:admin",
+  "buildCommand": "cd ../.. && npm install --legacy-peer-deps && npm run db:generate && npm run build:db && npm run build:admin",
   "outputDirectory": "dist",
   "installCommand": "echo 'skip — handled by buildCommand'",
   "framework": null,
