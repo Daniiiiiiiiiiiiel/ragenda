@@ -17,7 +17,7 @@ export function Footer() {
                 <Calendar className="w-4 h-4 text-white" />
               </div>
               <span className="font-extrabold text-xl text-white">
-                <span className="text-brand-400">R</span>a<span className="text-brand-400">G</span>enda
+                <span className="text-brand-400">R</span>om<span className="text-brand-400">.</span>Code
               </span>
             </div>
             <p className="text-sm leading-relaxed">{t('footer.tagline')}</p>
@@ -25,7 +25,7 @@ export function Footer() {
 
           {/* Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-sm">{t('footer.quickLinks')}</h3>
+            <h3 className="text-white font-semibold mb-4 text-sm">Quick links</h3>
             <nav className="flex flex-col gap-2.5">
               {[
                 { to: '/', label: t('nav.home') },
@@ -42,25 +42,24 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-sm">{t('footer.contact')}</h3>
+            <h3 className="text-white font-semibold mb-4 text-sm">Contact</h3>
             <div className="flex flex-col gap-3">
-              <a href="mailto:hello@ragenda.app" className="flex items-center gap-2.5 text-sm hover:text-brand-400 transition-colors">
-                <Mail className="w-4 h-4" /> hello@ragenda.app
+              <a href="mailto:hello@romcode.com" className="flex items-center gap-2.5 text-sm hover:text-brand-400 transition-colors">
+                <Mail className="w-4 h-4" /> hello@romcode.com
               </a>
               <a href="tel:+1234567890" className="flex items-center gap-2.5 text-sm hover:text-brand-400 transition-colors">
                 <Phone className="w-4 h-4" /> +1 (234) 567-890
               </a>
               <span className="flex items-center gap-2.5 text-sm">
-                <MapPin className="w-4 h-4" />
-                {t('footer.available')}
+                <MapPin className="w-4 h-4" /> Available online worldwide
               </span>
             </div>
           </div>
         </div>
 
         <div className="border-t border-slate-800 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-2">
-          <p className="text-xs">© {year} RaGenda. {t('footer.rights')}</p>
-          <p className="text-xs">{t('footer.builtWith')}</p>
+          <p className="text-xs">© {year} Rom.Code. {t('footer.rights')}</p>
+          <p className="text-xs">Built with ❤️ and TypeScript</p>
         </div>
       </div>
     </footer>

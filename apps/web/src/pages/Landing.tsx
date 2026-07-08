@@ -19,20 +19,13 @@ export default function Landing() {
   const [services, setServices] = useState<Service[]>([]);
 
   useEffect(() => {
-    api.get<Service[]>('/services')
-      .then((data) => { if (Array.isArray(data)) setServices(data); })
-      .catch(() => {});
+    api.get<Service[]>('/services').then(setServices).catch(() => {});
   }, []);
 
-  const getStep = (key: string) => {
-    const val = t(key, { returnObjects: true }) as any;
-    return { title: val?.title || '', desc: val?.desc || '' };
-  };
-
   const steps = [
-    { icon: <Sparkles className="w-6 h-6" />, ...getStep('howItWorks.step1') },
-    { icon: <Calendar className="w-6 h-6" />, ...getStep('howItWorks.step2') },
-    { icon: <CheckCircle className="w-6 h-6" />, ...getStep('howItWorks.step3') },
+    { icon: <Sparkles className="w-6 h-6" />, ...t('howItWorks.step1', { returnObjects: true }) as { title: string; desc: string } },
+    { icon: <Calendar className="w-6 h-6" />, ...t('howItWorks.step2', { returnObjects: true }) as { title: string; desc: string } },
+    { icon: <CheckCircle className="w-6 h-6" />, ...t('howItWorks.step3', { returnObjects: true }) as { title: string; desc: string } },
   ];
 
   return (
@@ -78,9 +71,9 @@ export default function Landing() {
           {/* Stats strip */}
           <div className="mt-20 grid grid-cols-3 gap-6 max-w-lg mx-auto">
             {[
-              { value: '500+', label: 'Clientes felices' },
-              { value: '24/7', label: 'Reservas en línea' },
-              { value: '< 1 min', label: 'Para agendar' },
+              { value: '500+', label: 'Happy clients' },
+              { value: '24/7', label: 'Online booking' },
+              { value: '< 1 min', label: 'To schedule' },
             ].map((s) => (
               <div key={s.label} className="text-center">
                 <p className="text-2xl font-black text-brand-600">{s.value}</p>
@@ -148,7 +141,7 @@ export default function Landing() {
                 <div className="w-16 h-16 rounded-2xl bg-brand-600 text-white flex items-center justify-center mx-auto mb-5 shadow-lg shadow-brand-200">
                   {step.icon}
                 </div>
-                <div className="text-xs font-bold text-brand-500 mb-2">PASO {i + 1}</div>
+                <div className="text-xs font-bold text-brand-500 mb-2">STEP {i + 1}</div>
                 <h3 className="font-bold text-slate-900 mb-2">{step.title}</h3>
                 <p className="text-sm text-slate-500 leading-relaxed">{step.desc}</p>
               </div>

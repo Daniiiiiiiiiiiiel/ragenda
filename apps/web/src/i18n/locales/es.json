@@ -71,7 +71,6 @@
     "notesPlaceholder": "Cuéntanos lo que necesitamos saber...",
     "confirm": "Confirmar Cita",
     "confirming": "Confirmando...",
-    "back": "Atrás",
     "success": "¡Cita solicitada!",
     "successDesc": "Revisaremos tu solicitud y confirmaremos pronto.",
     "goToPortal": "Ver mis citas",
@@ -87,11 +86,7 @@
   },
   "footer": {
     "tagline": "Agendamiento inteligente para negocios modernos.",
-    "rights": "Todos los derechos reservados.",
-    "quickLinks": "Accesos rápidos",
-    "contact": "Contacto",
-    "builtWith": "Hecho con ❤️ y TypeScript",
-    "available": "Disponible en todo el mundo"
+    "rights": "Todos los derechos reservados."
   },
   "errors": {
     "generic": "Algo salió mal. Por favor intenta de nuevo.",

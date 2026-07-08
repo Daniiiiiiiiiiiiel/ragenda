@@ -71,7 +71,7 @@ export default function Portal() {
               {t('portal.title')}
             </h1>
             <p className="text-slate-500 mt-1">
-              Hola, {user?.name}
+              {i18n.language.startsWith('es') ? `Hola, ${user?.name}` : `Hello, ${user?.name}`}
             </p>
           </div>
           <Link to="/agendar">
@@ -94,7 +94,7 @@ export default function Portal() {
             {upcoming.length > 0 && (
               <section>
                 <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">
-                  Próximas
+                  {i18n.language.startsWith('es') ? 'Próximas' : 'Upcoming'}
                 </h2>
                 <div className="space-y-4">
                   {upcoming.map((a) => (
@@ -113,7 +113,7 @@ export default function Portal() {
             {past.length > 0 && (
               <section>
                 <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">
-                  Historial
+                  {i18n.language.startsWith('es') ? 'Historial' : 'History'}
                 </h2>
                 <div className="space-y-4 opacity-75">
                   {past.map((a) => (
@@ -188,7 +188,7 @@ function AppointmentCard({
             )}
             {a.adminNotes && a.status === 'REJECTED' && (
               <div className="mt-2 bg-red-50 border border-red-100 rounded-lg px-3 py-1.5 text-xs text-red-700">
-                <strong>Nota del admin:</strong> {a.adminNotes}
+                <strong>Note:</strong> {a.adminNotes}
               </div>
             )}
           </div>

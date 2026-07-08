@@ -32,7 +32,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return err(res, 'Session invalid', 401);
   }
 
-  await prisma.session.deleteMany({ where: { id: session.id } });
+  await prisma.session.delete({ where: { id: session.id } });
   await revokeRefreshToken(oldHash);
 
   const newAccess = await signAccessToken(session.user.id, 'ADMIN');

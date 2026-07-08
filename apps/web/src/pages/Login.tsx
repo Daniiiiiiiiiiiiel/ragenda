@@ -46,7 +46,7 @@ export default function Login() {
             <div className="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center shadow-md">
               <Calendar className="w-5 h-5 text-white" />
             </div>
-            <span><span className="text-brand-600">R</span>a<span className="text-brand-600">G</span>enda</span>
+            <span><span className="text-brand-600">R</span>om<span className="text-brand-600">.</span>Code</span>
           </div>
           <h1 className="text-2xl font-bold text-slate-900 mt-4">{t('auth.login')}</h1>
           <p className="text-slate-500 mt-1 text-sm">{t('auth.noAccount')}{' '}

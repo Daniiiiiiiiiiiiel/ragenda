@@ -14,8 +14,8 @@ const schema = z.object({
   password: z
     .string()
     .min(8)
-    .regex(/[A-Z]/, 'Debe contener al menos una mayúscula')
-    .regex(/[0-9]/, 'Debe contener al menos un número'),
+    .regex(/[A-Z]/, 'Requires uppercase letter')
+    .regex(/[0-9]/, 'Requires a number'),
   phone: z.string().max(20).optional(),
 });
 
@@ -49,7 +49,7 @@ export default function Register() {
             <div className="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center shadow-md">
               <Calendar className="w-5 h-5 text-white" />
             </div>
-            <span><span className="text-brand-600">R</span>a<span className="text-brand-600">G</span>enda</span>
+            <span><span className="text-brand-600">R</span>om<span className="text-brand-600">.</span>Code</span>
           </div>
           <h1 className="text-2xl font-bold text-slate-900 mt-4">{t('auth.register')}</h1>
           <p className="text-slate-500 mt-1 text-sm">{t('auth.hasAccount')}{' '}

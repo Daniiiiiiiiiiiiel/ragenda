@@ -38,9 +38,7 @@ export default function BookAppointment() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api.get<Service[]>('/services')
-      .then((data) => { if (Array.isArray(data)) setServices(data); })
-      .catch(() => {});
+    api.get<Service[]>('/services').then(setServices).catch(() => {});
   }, []);
 
   // Build calendar grid
@@ -58,7 +56,7 @@ export default function BookAppointment() {
       try {
         const m = format(currentMonth, 'yyyy-MM');
         const data = await api.get<Slot[]>(`/slots/available?month=${m}`);
-        setMonthSlots(Array.isArray(data) ? data : []);
+        setMonthSlots(data);
       } catch {
         setMonthSlots([]);
       } finally {
@@ -201,7 +199,7 @@ export default function BookAppointment() {
 
               {/* Day-of-week headers */}
               <div className="grid grid-cols-7 mb-2">
-                {['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'].map((d) => (
+                {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d) => (
                   <div key={d} className="text-center text-xs font-semibold text-slate-400 py-1">{d}</div>
                 ))}
               </div>
@@ -250,7 +248,7 @@ export default function BookAppointment() {
                 <div className="card text-center py-10">
                   <p className="text-slate-400">{t('booking.noSlots')}</p>
                   <Button variant="secondary" className="mt-4" onClick={() => setStep('date')}>
-                    Cambiar fecha
+                    {i18n.language.startsWith('es') ? 'Cambiar fecha' : 'Choose another date'}
                   </Button>
                 </div>
               ) : (
@@ -273,7 +271,7 @@ export default function BookAppointment() {
                         {!slot.isAvailable && (
                            <div className="absolute inset-0 flex items-center justify-center bg-slate-50/50 backdrop-blur-[1px]">
                              <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
-                               {slot.isBlocked ? 'Bloqueado' : 'Lleno'}
+                               {slot.isBlocked ? 'Blocked' : 'Full'}
                              </span>
                            </div>
                         )}
@@ -295,7 +293,7 @@ export default function BookAppointment() {
                     { label: t('portal.service'), value: selectedService.name },
                     { label: t('portal.date'), value: formatDate(selectedDate, i18n.language) },
                     { label: t('portal.time'), value: formatTime(selectedSlot.time) },
-                    { label: 'Duración', value: `${selectedService.duration} min` },
+                    { label: 'Duration', value: `${selectedService.duration} min` },
                   ].map((r) => (
                     <div key={r.label} className="flex justify-between text-sm py-2 border-b border-slate-100 last:border-0">
                       <span className="text-slate-500 font-medium">{r.label}</span>
@@ -323,7 +321,7 @@ export default function BookAppointment() {
 
               <div className="flex gap-3">
                 <Button variant="secondary" onClick={() => setStep('time')} className="flex-1">
-                  {t('booking.back') || 'Atrás'}
+                  {i18n.language.startsWith('es') ? 'Atrás' : 'Back'}
                 </Button>
                 <Button loading={submitting} onClick={handleConfirm} className="flex-1" size="lg">
                   {submitting ? t('booking.confirming') : t('booking.confirm')}

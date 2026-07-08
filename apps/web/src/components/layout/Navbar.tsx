@@ -45,8 +45,8 @@ export function Navbar() {
               <Calendar className="w-4.5 h-4.5 text-white" />
             </div>
             <span>
-              <span className="text-brand-600">R</span>a
-              <span className="text-brand-600">G</span>enda
+              <span className="text-brand-600">R</span>om
+              <span className="text-brand-600">.</span>Code
             </span>
           </Link>
 

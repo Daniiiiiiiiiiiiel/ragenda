@@ -1,8 +1,8 @@
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
-const FROM = process.env.EMAIL_FROM ?? 'RaGenda <no-reply@ragenda.app>';
-const APP_URL = process.env.VITE_API_URL?.replace('/api', '') ?? 'https://ragenda.app';
+const FROM = process.env.EMAIL_FROM ?? 'Rom.Code <no-reply@romcode.com>';
+const APP_URL = process.env.VITE_API_URL?.replace('/api', '') ?? 'https://romcode.com';
 
 // ─── Email Verification ────────────────────────────────────────────────────────
 
@@ -16,7 +16,7 @@ export async function sendVerificationEmail(
   await resend.emails.send({
     from: FROM,
     to,
-    subject: 'Verify your RaGenda account / Verifica tu cuenta de RaGenda',
+    subject: 'Verify your Rom.Code account / Verifica tu cuenta de Rom.Code',
     html: `
       <!DOCTYPE html>
       <html>
@@ -25,7 +25,7 @@ export async function sendVerificationEmail(
           <div style="max-width:520px; margin:0 auto; background:#fff; border-radius:16px; padding:40px; box-shadow:0 4px 24px rgba(0,0,0,0.08);">
             <div style="text-align:center; margin-bottom:32px;">
               <span style="font-size:28px; font-weight:800; color:#1e293b;">
-                <span style="color:#6366f1;">R</span>a<span style="color:#6366f1;">G</span>enda
+                <span style="color:#7C3AED;">R</span>a<span style="color:#7C3AED;">G</span>enda
               </span>
             </div>
             <h1 style="font-size:22px; font-weight:700; color:#1e293b; margin:0 0 8px;">
@@ -35,7 +35,7 @@ export async function sendVerificationEmail(
               Please verify your email address to activate your account.<br/>
               Por favor, verifica tu correo electrónico para activar tu cuenta.
             </p>
-            <a href="${verifyUrl}" style="display:inline-block; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; text-decoration:none; padding:14px 32px; border-radius:10px; font-weight:600; font-size:15px;">
+            <a href="${verifyUrl}" style="display:inline-block; background:linear-gradient(135deg,#7C3AED,#A78BFA); color:#fff; text-decoration:none; padding:14px 32px; border-radius:10px; font-weight:600; font-size:15px;">
               Verify Email / Verificar correo
             </a>
             <p style="color:#94a3b8; font-size:13px; margin:24px 0 0;">
@@ -66,7 +66,7 @@ export async function sendAppointmentStatusEmail(
   await resend.emails.send({
     from: FROM,
     to,
-    subject: `RaGenda — Appointment ${statusEn} / Cita ${statusEs}`,
+    subject: `Rom.Code — Appointment ${statusEn} / Cita ${statusEs}`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -75,7 +75,7 @@ export async function sendAppointmentStatusEmail(
           <div style="max-width:520px; margin:0 auto; background:#fff; border-radius:16px; padding:40px; box-shadow:0 4px 24px rgba(0,0,0,0.08);">
             <div style="text-align:center; margin-bottom:32px;">
               <span style="font-size:28px; font-weight:800; color:#1e293b;">
-                <span style="color:#6366f1;">R</span>a<span style="color:#6366f1;">G</span>enda
+                <span style="color:#7C3AED;">R</span>a<span style="color:#7C3AED;">G</span>enda
               </span>
             </div>
             <div style="background:${color}15; border-left:4px solid ${color}; border-radius:8px; padding:16px; margin-bottom:24px;">

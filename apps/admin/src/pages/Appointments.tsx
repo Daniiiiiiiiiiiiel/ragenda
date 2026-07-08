@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { api } from '@/lib/api';
 import { formatDateLocal, formatTime, cn } from '@/lib/utils';
-import { Search, SlidersHorizontal, ChevronLeft, ChevronRight, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, CheckCircle, XCircle } from 'lucide-react';
 
 interface Appointment {
   id: string; date: string; timeSlot: string; status: string; notes?: string;
@@ -9,6 +9,7 @@ interface Appointment {
   service: { name: string; duration: number; color: string };
 }
 
+/** Defers a value update until `delay` ms after the last change */
 function useDebounce<T>(value: T, delay = 400): T {
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {
@@ -18,25 +19,20 @@ function useDebounce<T>(value: T, delay = 400): T {
   return debounced;
 }
 
-const STATUS_OPTIONS = [
-  { value: '',          label: 'Todos los estados' },
-  { value: 'PENDING',   label: 'Pendiente'   },
-  { value: 'ACCEPTED',  label: 'Aceptada'  },
-  { value: 'REJECTED',  label: 'Rechazada'  },
-  { value: 'CANCELLED', label: 'Cancelada' },
-];
-
 export default function Appointments() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [updatingId, setUpdatingId] = useState<string | null>(null);
 
+  // Debounce search so we don't fire a request on every keystroke
   const debouncedSearch = useDebounce(search, 400);
+
+  // Track in-flight status updates to prevent double-clicking
   const updatingRef = useRef<Set<string>>(new Set());
 
   const load = useCallback(async () => {
@@ -45,6 +41,7 @@ export default function Appointments() {
       const q = new URLSearchParams({ page: page.toString(), limit: '10' });
       if (debouncedSearch) q.append('search', debouncedSearch);
       if (statusFilter) q.append('status', statusFilter);
+
       const res = await api.get<{ appointments: Appointment[]; total: number; totalPages: number }>(
         `/admin/appointments?${q}`,
       );
@@ -56,64 +53,70 @@ export default function Appointments() {
     }
   }, [page, debouncedSearch, statusFilter]);
 
+  // Reset to page 1 when filters change
   useEffect(() => { setPage(1); }, [debouncedSearch, statusFilter]);
+
   useEffect(() => { load(); }, [load]);
 
   const handleStatusUpdate = async (id: string, status: 'ACCEPTED' | 'REJECTED') => {
     if (updatingRef.current.has(id)) return;
-    const notes = status === 'REJECTED' ? prompt('Motivo del rechazo (opcional):') : '';
-    if (notes === null && status === 'REJECTED') return;
+    const notes = status === 'REJECTED' ? prompt('Reason for rejection (optional):') : '';
+    if (notes === null && status === 'REJECTED') return; // Cancelled prompt
 
     updatingRef.current.add(id);
-    setUpdatingId(id);
-    setAppointments((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
+
+    // Optimistic update — change status in UI immediately
+    setAppointments((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, status } : a)),
+    );
 
     try {
       await api.patch(`/admin/appointments/${id}/status`, { status, adminNotes: notes });
     } catch (e: unknown) {
-      setAppointments((prev) => prev.map((a) => (a.id === id ? { ...a, status: 'PENDING' } : a)));
+      // Rollback on error
+      setAppointments((prev) =>
+        prev.map((a) => (a.id === id ? { ...a, status: 'PENDING' } : a)),
+      );
       alert((e as Error).message);
     } finally {
       updatingRef.current.delete(id);
-      setUpdatingId(null);
     }
   };
 
   return (
-    <div className="space-y-5 animate-slide-up">
-
-      <div className="page-header">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="page-title">Citas</h1>
-          <p className="page-subtitle">{total} reserva{total !== 1 ? 's' : ''} encontrada{total !== 1 ? 's' : ''}</p>
+          <h1 className="text-2xl font-bold text-slate-900">Appointments</h1>
+          <p className="text-slate-500 text-sm">Manage client bookings ({total} total)</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="card p-4">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="flex-1 relative">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#5e5a55' }} />
-            <input
-              type="text"
-              placeholder="Buscar por nombre o correo…"
-              className="input pl-10"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-          <div className="sm:w-44 relative">
-            <SlidersHorizontal className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#5e5a55' }} />
-            <select
-              className="input pl-10 appearance-none cursor-pointer"
-              value={statusFilter}
-              onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-            >
-              {STATUS_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
-          </div>
+      <div className="card p-4 flex flex-wrap gap-4">
+        <div className="flex-1 min-w-[200px] relative">
+          <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search name or email..."
+            className="input pl-9"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="w-full sm:w-48 relative">
+          <Filter className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+          <select
+            className="input pl-9 appearance-none"
+            value={statusFilter}
+            onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+          >
+            <option value="">All Statuses</option>
+            <option value="PENDING">Pending</option>
+            <option value="ACCEPTED">Accepted</option>
+            <option value="REJECTED">Rejected</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select>
         </div>
       </div>
 
@@ -121,99 +124,57 @@ export default function Appointments() {
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead>
-              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                <th className="table-header-cell">Cliente</th>
-                <th className="table-header-cell">Servicio</th>
-                <th className="table-header-cell">Fecha y Hora</th>
-                <th className="table-header-cell">Estado</th>
-                <th className="table-header-cell text-right">Acciones</th>
+            <thead className="bg-slate-50 text-slate-500 font-medium border-b border-slate-100">
+              <tr>
+                <th className="px-6 py-4">Client</th>
+                <th className="px-6 py-4">Service</th>
+                <th className="px-6 py-4">Date &amp; Time</th>
+                <th className="px-6 py-4">Status</th>
+                <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {loading ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center">
-                    <div className="flex flex-col items-center gap-2">
-                      <Loader2 className="w-5 h-5 animate-spin" style={{ color: '#c9b162' }} />
-                      <span className="text-sm" style={{ color: '#5e5a55' }}>Cargando citas…</span>
-                    </div>
-                  </td>
-                </tr>
+                <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-400">Loading...</td></tr>
               ) : appointments.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center">
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.03)' }}>
-                        <Search className="w-5 h-5" style={{ color: '#48453f' }} />
-                      </div>
-                      <p className="text-sm" style={{ color: '#7c7872' }}>No se encontraron citas</p>
-                      <p className="text-xs" style={{ color: '#48453f' }}>Intenta ajustar tu búsqueda o filtros</p>
-                    </div>
-                  </td>
-                </tr>
+                <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-400">No appointments found.</td></tr>
               ) : (
                 appointments.map((a) => (
-                  <tr key={a.id} className="table-row">
-                    <td className="table-cell" data-label="Cliente">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs shrink-0"
-                          style={{ backgroundColor: a.service.color || '#c9b162', fontWeight: 500 }}
-                        >
-                          {a.user.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="truncate text-right sm:text-left" style={{ color: '#dedddb', fontWeight: 500 }}>{a.user.name}</p>
-                          <p className="text-xs truncate text-right sm:text-left" style={{ color: '#5e5a55' }}>{a.user.email}</p>
-                        </div>
+                  <tr key={a.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-6 py-4">
+                      <p className="font-medium text-slate-900">{a.user.name}</p>
+                      <p className="text-slate-500 text-xs">{a.user.email}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: a.service.color }} />
+                        {a.service.name}
                       </div>
                     </td>
-                    <td className="table-cell" data-label="Servicio">
-                      <div className="flex flex-col items-end sm:items-start">
-                        <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: a.service.color }} />
-                          <span style={{ color: '#c5c3c0', fontWeight: 500 }}>{a.service.name}</span>
-                        </div>
-                        <p className="text-xs mt-0.5" style={{ color: '#5e5a55' }}>{a.service.duration} min</p>
-                      </div>
+                    <td className="px-6 py-4 text-slate-600">
+                      <div>{formatDateLocal(a.date)}</div>
+                      <div className="text-xs text-slate-400">{formatTime(a.timeSlot)} ({a.service.duration}m)</div>
                     </td>
-                    <td className="table-cell" data-label="Fecha y Hora">
-                      <div className="flex flex-col items-end sm:items-start">
-                        <p style={{ color: '#dedddb', fontWeight: 500 }}>{formatDateLocal(a.date)}</p>
-                        <p className="text-xs mt-0.5" style={{ color: '#5e5a55' }}>{formatTime(a.timeSlot)}</p>
-                      </div>
+                    <td className="px-6 py-4">
+                      <span className={cn('badge', `badge-${a.status.toLowerCase()}`)}>{a.status}</span>
                     </td>
-                    <td className="table-cell" data-label="Estado">
-                      <span className={cn('badge', `badge-${a.status.toLowerCase()}`)}>
-                        {a.status.charAt(0) + a.status.slice(1).toLowerCase()}
-                      </span>
-                    </td>
-                    <td className="table-cell sm:text-right" data-label="Acciones">
+                    <td className="px-6 py-4 text-right">
                       {a.status === 'PENDING' && (
-                        <div className="flex justify-end gap-1.5">
-                          {updatingId === a.id ? (
-                            <Loader2 className="w-5 h-5 animate-spin" style={{ color: '#5e5a55' }} />
-                          ) : (
-                            <>
-                              <button
-                                onClick={() => handleStatusUpdate(a.id, 'ACCEPTED')}
-                                className="p-2 rounded-lg transition-colors"
-                                title="Aceptar"
-                                style={{ color: '#4ade80' }}
-                              >
-                                <CheckCircle2 className="w-4.5 h-4.5" />
-                              </button>
-                              <button
-                                onClick={() => handleStatusUpdate(a.id, 'REJECTED')}
-                                className="p-2 rounded-lg transition-colors"
-                                title="Rechazar"
-                                style={{ color: '#f87171' }}
-                              >
-                                <XCircle className="w-4.5 h-4.5" />
-                              </button>
-                            </>
-                          )}
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => handleStatusUpdate(a.id, 'ACCEPTED')}
+                            className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                            title="Accept"
+                          >
+                            <CheckCircle className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={() => handleStatusUpdate(a.id, 'REJECTED')}
+                            className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Reject"
+                          >
+                            <XCircle className="w-5 h-5" />
+                          </button>
                         </div>
                       )}
                     </td>
@@ -225,25 +186,20 @@ export default function Appointments() {
         </div>
 
         {/* Pagination */}
-        <div className="card-footer flex items-center justify-between">
-          <span className="text-sm" style={{ color: '#5e5a55' }}>
-            Página <span style={{ color: '#c5c3c0', fontWeight: 500 }}>{page}</span> de{' '}
-            <span style={{ color: '#c5c3c0', fontWeight: 500 }}>{totalPages || 1}</span>
-          </span>
+        <div className="border-t border-slate-100 px-6 py-4 flex items-center justify-between">
+          <span className="text-sm text-slate-500">Page {page} of {totalPages || 1}</span>
           <div className="flex gap-2">
             <button
               disabled={page === 1}
               onClick={() => setPage((p) => p - 1)}
-              className="p-2 rounded-lg disabled:opacity-30 transition-all"
-              style={{ border: '1px solid rgba(255,255,255,0.06)', color: '#7c7872' }}
+              className="p-2 border border-slate-200 rounded-lg disabled:opacity-50 hover:bg-slate-50"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               disabled={page >= totalPages}
               onClick={() => setPage((p) => p + 1)}
-              className="p-2 rounded-lg disabled:opacity-30 transition-all"
-              style={{ border: '1px solid rgba(255,255,255,0.06)', color: '#7c7872' }}
+              className="p-2 border border-slate-200 rounded-lg disabled:opacity-50 hover:bg-slate-50"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

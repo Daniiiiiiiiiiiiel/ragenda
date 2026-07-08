@@ -2,13 +2,10 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { api } from '@/lib/api';
 import { formatDateLocal } from '@/lib/utils';
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  BarChart, Bar, PieChart, Pie, Cell,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  LineChart, Line, PieChart, Pie, Cell
 } from 'recharts';
-import {
-  Calendar, Users, XCircle, Clock,
-  TrendingUp, TrendingDown, ArrowUpRight,
-} from 'lucide-react';
+import { Calendar, Users, Activity, XCircle, Clock, TrendingUp } from 'lucide-react';
 
 interface KPIData {
   total: number;
@@ -32,34 +29,7 @@ interface ChartData {
   byService: { name: string; count: number }[];
 }
 
-const CHART_COLORS = ['#c9b162', '#a3843a', '#7c7872', '#5e5a55', '#dccb8a', '#866a31'];
-
-const ACTIVE_DOT = { r: 5, fill: '#c9b162', stroke: '#121110', strokeWidth: 2 };
-
-// Custom Tooltip
-function CustomTooltip({ active, payload, label, formatter }: {
-  active?: boolean; payload?: { value: number }[]; label?: string;
-  formatter?: (v: string) => string;
-}) {
-  if (!active || !payload?.length) return null;
-  return (
-    <div
-      className="rounded-lg px-4 py-3 text-sm"
-      style={{
-        background: '#1e1d1a',
-        border: '1px solid rgba(255,255,255,0.08)',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-      }}
-    >
-      <p className="mb-1 text-xs" style={{ color: '#5e5a55' }}>
-        {formatter ? formatter(label ?? '') : label}
-      </p>
-      <p className="font-medium" style={{ color: '#f7f7f6' }}>
-        {payload[0].value} citas
-      </p>
-    </div>
-  );
-}
+const COLORS = ['#7C3AED', '#A78BFA', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444'];
 
 export default function Dashboard() {
   const [kpis, setKpis] = useState<KPIData | null>(null);
@@ -70,7 +40,7 @@ export default function Dashboard() {
   useEffect(() => {
     Promise.all([
       api.get<{ kpis: KPIData; recent: RecentAppointment[] }>('/admin/stats/overview'),
-      api.get<ChartData>('/admin/stats/charts'),
+      api.get<ChartData>('/admin/stats/charts')
     ]).then(([overview, chartsData]) => {
       setKpis(overview.kpis);
       setRecent(overview.recent);
@@ -81,262 +51,120 @@ export default function Dashboard() {
 
   if (loading || !kpis || !charts) return (
     <div className="flex justify-center items-center h-64">
-      <div className="flex flex-col items-center gap-3">
-        <div
-          className="w-9 h-9 border-2 border-t-transparent rounded-full animate-spin"
-          style={{ borderColor: 'rgba(201,177,98,0.3)', borderTopColor: 'transparent' }}
-        />
-        <p className="text-sm" style={{ color: '#5e5a55' }}>Cargando datos…</p>
-      </div>
+      <div className="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
-  const acceptanceRate = kpis.total > 0
-    ? Math.round((kpis.accepted / kpis.total) * 100)
-    : 0;
-
   return (
-    <div className="space-y-6 animate-slide-up">
-
-      {/* Welcome banner */}
-      <div
-        className="rounded-xl p-6 relative overflow-hidden"
-        style={{
-          background: 'linear-gradient(135deg, #1a1918 0%, #1e1d1a 50%, #1a1918 100%)',
-          border: '1px solid rgba(201,177,98,0.1)',
-        }}
-      >
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{ backgroundImage: 'radial-gradient(circle at 80% 30%, rgba(201,177,98,0.12) 0%, transparent 50%)' }}
-        />
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <p className="text-sm mb-1" style={{ color: '#5e5a55', fontWeight: 400 }}>Bienvenido de nuevo</p>
-            <h2
-              style={{
-                fontFamily: "'Cormorant Garamond', Georgia, serif",
-                fontSize: '1.75rem',
-                fontWeight: 500,
-                color: '#f7f7f6',
-              }}
-            >
-              Resumen del Panel
-            </h2>
-            <p className="text-sm mt-1" style={{ color: '#7c7872' }}>
-              Aquí está lo que está ocurriendo con tus citas.
-            </p>
-          </div>
-          <div className="flex gap-3">
-            {[
-              { label: 'Total', value: kpis.total },
-              { label: 'Pendientes', value: kpis.pending },
-              { label: 'Aceptadas', value: `${acceptanceRate}%` },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className="glass rounded-lg px-4 py-3 text-center min-w-[80px]"
-              >
-                <p className="text-xl font-medium" style={{ color: '#f7f7f6' }}>{item.value}</p>
-                <p className="text-xs mt-0.5" style={{ color: '#5e5a55' }}>{item.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900">Dashboard Overview</h1>
+        <p className="text-slate-500 text-sm">Key metrics for the current month.</p>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 stagger">
-        <StatCard
-          title="Total de Citas" value={kpis.total}
-          trend={{ label: 'Este mes', up: true }}
-          icon={<Calendar className="w-4 h-4" />} color="gold"
-        />
-        <StatCard
-          title="Pendientes" value={kpis.pending}
-          trend={{ label: 'Requieren atención', up: false }}
-          icon={<Clock className="w-4 h-4" />} color="amber"
-        />
-        <StatCard
-          title="Total de Clientes" value={kpis.totalClients}
-          trend={{ label: 'Todos los tiempos', up: true }}
-          icon={<Users className="w-4 h-4" />} color="green"
-        />
-        <StatCard
-          title="Tasa de Cancelación" value={`${kpis.cancellationRate}%`}
-          trend={{ label: `${kpis.cancelled} canceladas`, up: false }}
-          icon={<XCircle className="w-4 h-4" />} color="red"
-        />
+      {/* KPIs */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard title="Total Appointments" value={kpis.total} icon={<Calendar className="w-5 h-5 text-brand-600" />} trend="This month" />
+        <StatCard title="Pending Requests" value={kpis.pending} icon={<Clock className="w-5 h-5 text-amber-600" />} trend="Requires action" />
+        <StatCard title="Total Clients" value={kpis.totalClients} icon={<Users className="w-5 h-5 text-emerald-600" />} trend="All time" />
+        <StatCard title="Cancellation Rate" value={`${kpis.cancellationRate}%`} icon={<XCircle className="w-5 h-5 text-red-600" />} trend={`${kpis.cancelled} cancelled`} />
       </div>
 
-      {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-
-        {/* Area chart */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Chart */}
         <div className="card lg:col-span-2">
-          <div className="card-header">
-            <div>
-              <h3 className="font-medium" style={{ fontSize: '1.1rem' }}>Tendencia de Citas</h3>
-              <p className="text-xs mt-0.5" style={{ color: '#5e5a55' }}>Últimos 30 días</p>
-            </div>
-            <span className="badge" style={{ background: 'rgba(201,177,98,0.08)', color: '#c9b162', border: '1px solid rgba(201,177,98,0.15)' }}>
-              <TrendingUp className="w-3 h-3" /> En Vivo
-            </span>
-          </div>
-          <div className="card-body pt-2">
-            <div className="h-56 w-full">
+          <div className="card-body">
+            <h3 className="font-semibold text-slate-900 mb-6 flex items-center gap-2">
+              <Activity className="w-4 h-4 text-slate-400" />
+              Appointments (Last 30 Days)
+            </h3>
+            <div className="h-72 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={charts.dailyCounts} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%"  stopColor="#c9b162" stopOpacity={0.15} />
-                      <stop offset="95%" stopColor="#c9b162" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.04)" />
-                  <XAxis
-                    dataKey="date"
-                    tickFormatter={(v) => v.split('-').slice(1).join('/')}
-                    stroke="#48453f" fontSize={10} tickLine={false} axisLine={false}
-                    interval="preserveStartEnd"
-                  />
-                  <YAxis stroke="#48453f" fontSize={10} tickLine={false} axisLine={false} allowDecimals={false} />
+                <LineChart data={charts.dailyCounts}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <XAxis dataKey="date" tickFormatter={(v) => v.split('-').slice(1).join('/')} stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
                   <Tooltip
-                    content={<CustomTooltip formatter={(v) => formatDateLocal(v)} />}
-                    cursor={{ stroke: '#c9b162', strokeWidth: 1, strokeDasharray: '4 4' }}
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    labelFormatter={(v) => formatDateLocal(v)}
                   />
-                  <Area
-                    type="monotone" dataKey="count" stroke="#c9b162" strokeWidth={1.5}
-                    fill="url(#areaGrad)" dot={false} activeDot={ACTIVE_DOT}
-                  />
-                </AreaChart>
+                  <Line type="monotone" dataKey="count" stroke="#7C3AED" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
         </div>
 
-        {/* Donut */}
+        {/* Donut Chart */}
         <div className="card">
-          <div className="card-header">
-            <div>
-              <h3 className="font-medium" style={{ fontSize: '1.1rem' }}>Por Servicio</h3>
-              <p className="text-xs mt-0.5" style={{ color: '#5e5a55' }}>Distribución</p>
+          <div className="card-body">
+            <h3 className="font-semibold text-slate-900 mb-6 flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-slate-400" />
+              By Service
+            </h3>
+            <div className="h-64 w-full">
+              {charts.byService.length === 0 ? (
+                <div className="h-full flex items-center justify-center text-slate-400 text-sm">No data</div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={charts.byService} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="count" nameKey="name">
+                      {charts.byService.map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
             </div>
-          </div>
-          <div className="card-body pt-2">
-            {charts.byService.length === 0 ? (
-              <div className="h-48 flex items-center justify-center text-sm" style={{ color: '#5e5a55' }}>Sin datos aún</div>
-            ) : (
-              <>
-                <div className="h-44 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={charts.byService} innerRadius={50} outerRadius={68}
-                        paddingAngle={3} dataKey="count" nameKey="name" strokeWidth={0}
-                      >
-                        {charts.byService.map((_, i) => (
-                          <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        contentStyle={{
-                          borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)',
-                          background: '#1e1d1a', fontSize: 12, color: '#c5c3c0',
-                          boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-                        }}
-                        itemStyle={{ color: '#f7f7f6' }}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
+            <div className="mt-4 flex flex-wrap gap-3 justify-center">
+              {charts.byService.slice(0, 4).map((s, i) => (
+                <div key={s.name} className="flex items-center gap-1.5 text-xs text-slate-600">
+                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                  {s.name} ({s.count})
                 </div>
-                <div className="space-y-2 mt-2">
-                  {charts.byService.slice(0, 5).map((s, i) => (
-                    <div key={s.name} className="flex items-center gap-2 text-xs">
-                      <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }} />
-                      <span className="flex-1 truncate" style={{ color: '#a09d98' }}>{s.name}</span>
-                      <span className="font-medium" style={{ color: '#dedddb' }}>{s.count}</span>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Charts Row 2 */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-
-        {/* Bar chart */}
+        {/* Bar Chart */}
         <div className="card lg:col-span-2">
-          <div className="card-header">
-            <div>
-              <h3 className="font-medium" style={{ fontSize: '1.1rem' }}>Por Día de la Semana</h3>
-              <p className="text-xs mt-0.5" style={{ color: '#5e5a55' }}>Distribución de citas</p>
-            </div>
-          </div>
-          <div className="card-body pt-2">
-            <div className="h-48 w-full">
+          <div className="card-body">
+            <h3 className="font-semibold text-slate-900 mb-6">By Day of Week</h3>
+            <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={charts.byDayOfWeek} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%"   stopColor="#c9b162" stopOpacity={0.8} />
-                      <stop offset="100%" stopColor="#a3843a" stopOpacity={0.5} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.04)" />
-                  <XAxis dataKey="day" stroke="#48453f" fontSize={10} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#48453f" fontSize={10} tickLine={false} axisLine={false} allowDecimals={false} />
-                  <Tooltip
-                    cursor={{ fill: 'rgba(255,255,255,0.02)', radius: 6 }}
-                    contentStyle={{
-                      borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)',
-                      background: '#1e1d1a', fontSize: 12, color: '#c5c3c0',
-                      boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-                    }}
-                  />
-                  <Bar dataKey="count" fill="url(#barGrad)" radius={[4, 4, 0, 0]} maxBarSize={36} />
+                <BarChart data={charts.byDayOfWeek}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <XAxis dataKey="day" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+                  <Tooltip cursor={{ fill: '#f1f5f9' }} contentStyle={{ borderRadius: '8px', border: 'none' }} />
+                  <Bar dataKey="count" fill="#A78BFA" radius={[4, 4, 0, 0]} maxBarSize={50} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
         </div>
 
-        {/* Recent bookings */}
+        {/* Recent Appointments */}
         <div className="card">
-          <div className="card-header">
-            <h3 className="font-medium" style={{ fontSize: '1.1rem' }}>Reservas Recientes</h3>
-            <ArrowUpRight className="w-4 h-4" style={{ color: '#48453f' }} />
-          </div>
-          <div className="card-body pt-2">
-            <div className="space-y-2">
+          <div className="card-body">
+            <h3 className="font-semibold text-slate-900 mb-6">Recent Bookings</h3>
+            <div className="space-y-4">
               {recent.length === 0 ? (
-                <p className="text-sm text-center py-6" style={{ color: '#5e5a55' }}>Sin reservas recientes</p>
+                <p className="text-slate-400 text-sm">No recent bookings</p>
               ) : (
                 recent.map((a) => (
-                  <div
-                    key={a.id}
-                    className="flex items-center gap-3 py-2.5"
-                    style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}
-                  >
-                    <div
-                      className="w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0"
-                      style={{
-                        backgroundColor: a.service.color || '#c9b162',
-                        color: '#fff',
-                        fontWeight: 500,
-                        fontSize: '0.75rem',
-                      }}
-                    >
-                      {a.user.name.charAt(0).toUpperCase()}
+                  <div key={a.id} className="flex items-center gap-3 pb-4 border-b border-slate-100 last:border-0 last:pb-0">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm shrink-0" style={{ backgroundColor: a.service.color || '#7C3AED' }}>
+                      {a.user.name.charAt(0)}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm truncate" style={{ color: '#dedddb', fontWeight: 500 }}>{a.user.name}</p>
-                      <p className="text-xs truncate" style={{ color: '#5e5a55' }}>{a.service.name}</p>
+                      <p className="font-medium text-slate-900 text-sm truncate">{a.user.name}</p>
+                      <p className="text-xs text-slate-500 truncate">{a.service.name}</p>
                     </div>
-                    <div className="text-xs shrink-0" style={{ color: '#48453f', fontWeight: 500 }}>
+                    <div className="text-xs text-slate-400 shrink-0">
                       {formatDateLocal(a.createdAt).slice(0, 6)}
                     </div>
                   </div>
@@ -350,41 +178,16 @@ export default function Dashboard() {
   );
 }
 
-/* ── StatCard ──────────────────────────────────────────────────────── */
-type ColorKey = 'gold' | 'amber' | 'green' | 'red';
-
-const colorMap: Record<ColorKey, { bg: string; icon: string; accent: string }> = {
-  gold:  { bg: 'rgba(201,177,98,0.06)',  icon: '#c9b162', accent: 'rgba(201,177,98,0.12)' },
-  amber: { bg: 'rgba(245,158,11,0.06)',  icon: '#f5c842', accent: 'rgba(245,158,11,0.12)' },
-  green: { bg: 'rgba(16,185,129,0.06)',  icon: '#4ade80', accent: 'rgba(16,185,129,0.12)' },
-  red:   { bg: 'rgba(239,68,68,0.06)',   icon: '#f87171', accent: 'rgba(239,68,68,0.12)' },
-};
-
-function StatCard({
-  title, value, trend, icon, color,
-}: {
-  title: string;
-  value: string | number;
-  trend: { label: string; up: boolean };
-  icon: ReactNode;
-  color: ColorKey;
-}) {
-  const c = colorMap[color];
+function StatCard({ title, value, icon, trend }: { title: string; value: string | number; icon: ReactNode; trend: string }) {
   return (
-    <div className="card p-5 relative overflow-hidden animate-slide-up transition-all duration-200 hover:-translate-y-0.5" style={{ cursor: 'default' }}>
-      <div className="absolute top-0 right-0 w-20 h-20 rounded-full -translate-y-8 translate-x-8" style={{ background: c.accent }} />
-      <div className="flex items-start justify-between gap-3">
+    <div className="card">
+      <div className="card-body flex items-start justify-between">
         <div>
-          <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#5e5a55', fontWeight: 600, letterSpacing: '0.08em' }}>{title}</p>
-          <p className="text-2xl tracking-tight" style={{ color: '#f7f7f6', fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500 }}>{value}</p>
-          <div className={`flex items-center gap-1.5 mt-2 text-xs`} style={{ color: trend.up ? '#4ade80' : '#5e5a55', fontWeight: 500 }}>
-            {trend.up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-            {trend.label}
-          </div>
+          <p className="text-sm font-medium text-slate-500 mb-1">{title}</p>
+          <p className="text-3xl font-bold text-slate-900">{value}</p>
+          <p className="text-xs text-slate-400 mt-2">{trend}</p>
         </div>
-        <div className="p-2.5 rounded-lg flex-shrink-0" style={{ background: c.bg, color: c.icon }}>
-          {icon}
-        </div>
+        <div className="p-3 bg-slate-50 rounded-xl">{icon}</div>
       </div>
     </div>
   );
