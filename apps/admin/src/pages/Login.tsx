@@ -32,8 +32,8 @@ export default function AdminLogin() {
       <div className="w-full max-w-md animate-slide-up">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-3 font-extrabold text-3xl text-white mb-2">
-            <div className="w-12 h-12 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/20">
-              <img src="/assets/logo.png" alt="Rom.Code" className="w-7 h-7 object-contain" />
+            <div className="w-14 h-14 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/20">
+              <img src="/assets/logo.png" alt="Rom.Code" className="w-10 h-10 object-contain" />
             </div>
             <span><span className="text-brand-400">R</span>om<span className="text-brand-400">.</span>Code</span>
           </div>

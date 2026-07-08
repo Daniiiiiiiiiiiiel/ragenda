@@ -125,3 +125,16 @@ model EmailVerification {
   @@index([token])
   @@index([userId])
 }
+
+model ScheduleConfig {
+  id           String   @id @default(cuid())
+  dayOfWeek    Int      // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+  isOpen       Boolean  @default(true)
+  openTime     String   @default("09:00") // "HH:MM"
+  closeTime    String   @default("17:00") // "HH:MM"
+  slotDuration Int      @default(60)      // minutes
+  updatedAt    DateTime @updatedAt
+
+  @@unique([dayOfWeek])
+  @@index([dayOfWeek])
+}

@@ -41,7 +41,7 @@ export function Navbar() {
         <nav className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 font-extrabold text-xl text-slate-900">
-            <img src="/assets/logo.png" alt="Rom.Code" className="w-8 h-8 object-contain" />
+            <img src="/assets/logo.png" alt="Rom.Code" className="w-10 h-10 object-contain" />
             <span>
               <span className="text-brand-600">R</span>om<span className="text-brand-600">.</span>Code
             </span>
