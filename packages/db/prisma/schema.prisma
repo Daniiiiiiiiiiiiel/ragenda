@@ -1,5 +1,9 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
@@ -8,19 +12,36 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  CLIENT
+  ADMIN
+}
+
+enum AppointmentStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
 model User {
-  id            String        @id @default(cuid())
-  email         String        @unique
+  id            String   @id @default(cuid())
+  email         String   @unique
   passwordHash  String
   name          String
   phone         String?
-  role          Role          @default(CLIENT)
-  isActive      Boolean       @default(true)
-  emailVerified Boolean       @default(false)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  appointments  Appointment[]
-  sessions      Session[]
+  role          Role     @default(CLIENT)
+  isActive      Boolean  @default(true)
+  emailVerified Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  appointments Appointment[]
+  sessions     Session[]
 
   @@index([email])
   @@index([role])
@@ -28,13 +49,14 @@ model User {
 }
 
 model Service {
-  id           String        @id @default(cuid())
-  name         String
-  duration     Int
-  description  String?
-  price        Float?
-  isActive     Boolean       @default(true)
-  color        String        @default("#6366f1")
+  id          String  @id @default(cuid())
+  name        String
+  duration    Int // minutes
+  description String?
+  price       Float?
+  isActive    Boolean @default(true)
+  color       String  @default("#6366f1") // for calendar display
+
   appointments Appointment[]
 
   @@index([isActive])
@@ -45,14 +67,15 @@ model Appointment {
   userId     String
   serviceId  String
   date       DateTime          @db.Date
-  timeSlot   String
+  timeSlot   String // "HH:MM" format e.g. "09:00"
   status     AppointmentStatus @default(PENDING)
-  notes      String?
-  adminNotes String?
+  notes      String? // client notes
+  adminNotes String? // admin notes (reason for rejection, etc.)
   createdAt  DateTime          @default(now())
   updatedAt  DateTime          @updatedAt
-  service    Service           @relation(fields: [serviceId], references: [id])
-  user       User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id])
 
   @@index([userId])
   @@index([date])
@@ -64,7 +87,7 @@ model Appointment {
 model AvailableSlot {
   id              String   @id @default(cuid())
   date            DateTime @db.Date
-  time            String
+  time            String // "HH:MM" format
   maxCapacity     Int      @default(1)
   currentBookings Int      @default(0)
   isBlocked       Boolean  @default(false)
@@ -76,37 +99,16 @@ model AvailableSlot {
   @@index([isBlocked])
 }
 
-/// Stores the global schedule configuration (singleton row, id = "default")
-model ScheduleConfig {
-  id              String   @id @default("default")
-  /// JSON array of day numbers: 0=Sun,1=Mon,...,6=Sat. e.g. [1,2,3,4,5]
-  workDays        Json     @default("[1,2,3,4,5]")
-  /// Start time "HH:MM" e.g. "09:00"
-  startTime       String   @default("09:00")
-  /// End time "HH:MM" e.g. "18:00"
-  endTime         String   @default("18:00")
-  /// Slot interval in minutes (15, 20, 30, 45, 60)
-  intervalMinutes Int      @default(30)
-  /// Max simultaneous bookings per slot
-  maxCapacity     Int      @default(1)
-  /// How many days ahead clients can book (0 = unlimited)
-  bookingWindowDays Int    @default(60)
-  /// Break start "HH:MM" optional (e.g. "13:00")
-  breakStart      String?
-  /// Break end "HH:MM" optional (e.g. "14:00")
-  breakEnd        String?
-  updatedAt       DateTime @updatedAt
-}
-
 model Session {
   id        String   @id @default(cuid())
   userId    String
-  token     String   @unique
+  token     String   @unique // hashed refresh token
   expiresAt DateTime
   createdAt DateTime @default(now())
   userAgent String?
   ipAddress String?
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([token])
   @@index([userId])
@@ -122,16 +124,4 @@ model EmailVerification {
 
   @@index([token])
   @@index([userId])
-}
-
-enum Role {
-  CLIENT
-  ADMIN
-}
-
-enum AppointmentStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
-  CANCELLED
 }

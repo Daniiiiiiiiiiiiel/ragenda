@@ -4,7 +4,6 @@ import {
   Calendar, LayoutDashboard, Users, Settings,
   CalendarDays, LogOut,
 } from 'lucide-react';
-import { Logo } from '@/components/ui/Logo';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -45,7 +44,7 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       )}>
       {/* Brand */}
       <div className="flex items-center gap-3 px-6 py-5 border-b border-white/10">
-        <Logo size={36} />
+        <img src="/assets/logo.png" alt="Rom.Code" className="w-9 h-9 object-contain" />
         <div>
           <p className="font-extrabold text-white text-lg leading-none">
             <span className="text-brand-400">R</span>om<span className="text-brand-400">.</span>Code

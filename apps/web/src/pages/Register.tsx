@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import { Logo } from '@/components/ui/Logo';
+
 
 const schema = z.object({
   name: z.string().min(2).max(80),
@@ -46,7 +46,9 @@ export default function Register() {
       <div className="w-full max-w-md animate-slide-up">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2.5 font-extrabold text-2xl text-slate-900 mb-2">
-            <Logo size={40} />
+            <div className="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center shadow-md">
+              <img src="/assets/logo.png" alt="Rom.Code" className="w-6 h-6 object-contain" />
+            </div>
             <span><span className="text-brand-600">R</span>om<span className="text-brand-600">.</span>Code</span>
           </div>
           <h1 className="text-2xl font-bold text-slate-900 mt-4">{t('auth.register')}</h1>

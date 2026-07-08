@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '@/contexts/AuthContext';
 import { AlertCircle, Loader2 } from 'lucide-react';
-import { Logo } from '@/components/ui/Logo';
 
 export default function AdminLogin() {
   const { login, isAuthenticated } = useAdminAuth();
@@ -33,7 +32,9 @@ export default function AdminLogin() {
       <div className="w-full max-w-md animate-slide-up">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-3 font-extrabold text-3xl text-white mb-2">
-            <Logo size={48} />
+            <div className="w-12 h-12 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/20">
+              <img src="/assets/logo.png" alt="Rom.Code" className="w-7 h-7 object-contain" />
+            </div>
             <span><span className="text-brand-400">R</span>om<span className="text-brand-400">.</span>Code</span>
           </div>
           <h1 className="text-xl text-slate-400 mt-2 font-medium">System Administration</h1>

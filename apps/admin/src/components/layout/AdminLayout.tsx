@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Menu } from 'lucide-react';
-import { Logo } from '@/components/ui/Logo';
 
 export function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -14,7 +13,7 @@ export function AdminLayout() {
         {/* Mobile Header */}
         <div className="lg:hidden p-4 bg-white border-b border-slate-200 flex items-center justify-between sticky top-0 z-20">
           <div className="flex items-center gap-2">
-            <Logo size={28} />
+            <img src="/assets/logo.png" alt="Rom.Code" className="w-7 h-7 object-contain" />
             <div className="font-extrabold text-slate-900 text-lg leading-none">
               <span className="text-brand-600">R</span>om<span className="text-brand-600">.</span>Code
             </div>
